@@ -41,7 +41,7 @@ function StackNavigator() {
       <Stack.Screen name="SingleItem" component={SingleItem} />
       <Stack.Screen name="Cart" component={CartPage} />
       <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="Recomendation" component={RecomendationPage} />
+      <Stack.Screen name="Recommendation" component={RecomendationPage} />
       <Stack.Screen name="Promos" component={Promos} />
       <Stack.Screen name="FirstScreen" component={FirstScreen} />
     </Stack.Navigator>
