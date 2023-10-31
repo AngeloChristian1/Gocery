@@ -1,4 +1,5 @@
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
+import { useState, useEffect } from "react";
 import { View, Image, Text } from "react-native";
 import Account from "../BottomTab/Account";
 import Cart from "../BottomTab/Cart";
@@ -11,12 +12,50 @@ import { Fontisto } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import TopBarOrderNavigator from "../Stack/MyOrder/TopNavigator";
+import { useSelector, useDispatch } from "react-redux";
+// import { addToCart, removeFromCart, incrementQuantity, decrementQuantity } from "../../redux/cartReducer";
+import axios from "axios";
+
 
 const Tab = createMaterialBottomTabNavigator();
 
 function TabNavigator() {
+
+  const { authToken } = useSelector((state) => state.auth);
+  const [cartData, setCartData] = useState([]);
+
+
+  const dispatch =useDispatch()
+  const cart = useSelector((state)=> state.cart.cart)
+  console.log("cart from cart page:", cart)
+
+  const fetchCart = async () => {
+    axios({
+      method: "GET",
+      url: `https://grocery-9znl.onrender.com/api/v1/cart/`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((response) => {
+        console.log("response from cart: ", response.data.data.items);
+        setCartData(response.data.data.items);
+      })
+      .catch((error) => {
+        console.log("error in cart page", error);
+        console.log("error from tab:",error.response.data.message);
+      });
+  };
+  
+  useEffect(() => {
+    if (authToken) {
+      fetchCart();
+  
+    }
+  }, [authToken]);
   return (
     <Tab.Navigator
+    className="bg-green-200"
       tabBarOptions={{
         showLabel: false,
         style: { backgroundColor: "red", border: 1 },
@@ -53,7 +92,8 @@ function TabNavigator() {
           tabBarLabel: "",
 
           tabBarIcon: ({ focused }) => (
-            <View className="text-center  items-center rounded-full  ">
+            <View className="text-center  items-center rounded-full relative ">
+           {cartData.length > 0 && <Text className="bg-red-500 absolute text-white rounded-full text-[10px]  text-center items-center justify-center z-10 right-0 px-1">{cartData.length}</Text>}
               <FontAwesome5
                 name="shopping-basket"
                 size={20}

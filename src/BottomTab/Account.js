@@ -1,10 +1,16 @@
-import { View, Text, TouchableOpacity, Image, FlatList } from "react-native";
-import React, {useState} from "react";
+import { View, Text, TouchableOpacity, Image, FlatList, ScrollView } from "react-native";
+import React, {useState, useEffect} from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import AccountText from "../components/AccountText";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import {deleteItemAsync,  setItemAsync, getItemAsync} from "expo-secure-store"
+import { setAuthLoaded,setAuthStatus, setAuthProfile, setAuthToken } from "../redux/authSlice";
 
 const Account = () => {
+  const dispatch = useDispatch();
+  const [profile, setProfile]= useState({})
+  // const [email, setEmail]= useState("")
   const navigation = useNavigation();
   const [person, setPerson] =useState({
     name:"Izere Nolan",
@@ -13,7 +19,35 @@ const Account = () => {
     profile: require("../../assets/images/profile.jpeg"),
     DOB:"02/04/2000"
   })
+
+const handleLogout = ()=>{
+  console.log("Logging Out")
+  deleteItemAsync('authToken')
+  deleteItemAsync("authProfile")
+  deleteItemAsync("userCart")
+  dispatch(setAuthToken(false))
+  dispatch(setAuthProfile(null))
+  dispatch(setAuthStatus(false))
+  alert("logout successful")
+}
+
+;
+
+// const userProfile = useSelector((state) => state.auth.authProfile);
+const getProfile = async ()=>{
+
+ let userProfile =await getItemAsync("authProfile")
+ setProfile(JSON.parse(userProfile))
+};
+useEffect(
+  ()=>{getProfile()}
+  
+  ,[])
+
+console.log("Profile from account:", (profile))
+
   return (
+    <ScrollView>
     <View className="pt-10 px-2 h-full bg-white">
  
       <View className="justify-center align-center flex-col flex m-2  border-gray-500 border-b-0">
@@ -22,18 +56,22 @@ const Account = () => {
       </View>
 
       <View className="items-center justify-center gap-1">
-        <Image
-          source={person.profile}
+      {profile? (<Image
+      source={{ uri: profile.profilePicture }}
+      className="w-20 h-20 rounded-full"
+    />):
+       ( <Image
+          source={person?.profile}
           className="w-20 h-20 rounded-full"
-        />
-        <Text className="font-semibold text-lg ">{person.name}</Text>
+        />)}
+        <Text className="font-semibold text-lg ">{profile?.fullName}</Text>
         <Text className=" text-normal text-gray-500 mb-3">
-          {person.email}
+        {profile?.email}
         </Text>
         <TouchableOpacity
           className="bg-primary p-2 px-6 rounded my-2 flex flex-row gap-2 justify-center items-center pb-3"
           onPress={() => {
-            navigation.navigate("EditProfile", person);
+            navigation.navigate("EditProfile", profile);
           }}
         >
         <Feather name="edit-2" size={16} color="white" />
@@ -67,8 +105,8 @@ const Account = () => {
       subtitle="Get Support From Us"
       />
  
-      <View className="mx-2 mt-4 flex flex-row justify-between">
-        <TouchableOpacity onPress={()=>{alert('Are you sure you want to be signed out')}}>
+      <View className="mx-2 my-4 flex flex-row justify-between">
+        <TouchableOpacity onPress={handleLogout}>
           <Text className="font-semibold text-lg ">Logout</Text>
           
         </TouchableOpacity>
@@ -76,6 +114,7 @@ const Account = () => {
       </View>
     
       </View>
+      </ScrollView>
   );
 };
 

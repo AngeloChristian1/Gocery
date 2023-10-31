@@ -12,11 +12,11 @@ import React from "react";
 const SmallCard = (props) => {
   const navigation = useNavigation();
   return (
-    <TouchableOpacity onPress={() => navigation.navigate(`${props.link}`)}>
+    <TouchableOpacity onPress={props.action}>
       <View className="flex-col  m-3 mx-2   shadow-lg w-20  rounded-md">
-        <View className="flex-col w-20 p-1 rounded-md border-gray-300 border-[.5px] justify-center items-center">
+        <View className="flex-col w-20 p-1 rounded-md border-gray-200 border-[2px] justify-center items-center">
           <Image
-            source={props.ImageURL}
+          source={{ uri: props.ImageURL }}
             style={{resizeMode:"contain"}}
             className="w-16 h-16  object-contain  border-[1px]    rounded-lg "
           />

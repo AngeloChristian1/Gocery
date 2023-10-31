@@ -1,23 +1,92 @@
-import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
-import React, {useState} from "react";
+import { View, Text, Image, TouchableOpacity, FlatList, ToastAndroid } from "react-native";
+import React, {useState, useEffect} from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
+import { useSelector, useDispatch } from "react-redux";
+import { getItemAsync, setItemAsync } from "expo-secure-store";
 
 const CartCard = (props) => {
-    const [count, setCount] = useState(1)
-    const countUp = ()=>{
-        
-            setCount(count+1)
-        
-    }
-    const countDown = ()=>{
-        if(count == 1){
-            setCount(1)
-        }
-        setCount(count-1)
-    }
   const navigation = useNavigation();
+    const [count, setCount] = useState(props.counter)
+    const { authToken } = useSelector((state) => state.auth);
+    const [storageCart,setStorageCart]=useState([])
+
+    function showToast(message) {
+      ToastAndroid.show(message, ToastAndroid.SHORT);
+    }
+
+    const getCartFromStorage = async () => {
+      let userCart = await getItemAsync("userCart");
+      setStorageCart(JSON.parse(userCart));
+    };
+    useEffect(() => {
+      getCartFromStorage();
+    }, []);
+
+    const countUp = async ()=>{
+            setCount(count+1)
+            console.log("storage CartCard",storageCart)
+            await updateCartItem()
+    }
+
+    // decrementing item
+    const countDown = async ()=>{
+      if(count >0){
+         setCount(count-1)
+        await updateCartItem()
+      }
+        if(count === 0){
+            alert("item will be removed from list")
+            showToast("item will be removed from list")
+        }   
+    }
+
+    const updateCartItem = async () => {
+      axios({
+        method: "PATCH",
+        url: `https://grocery-9znl.onrender.com/api/v1/cart/updateItem/${props.itemId}`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        data: {
+          count
+        },
+      })
+        .then((response) => {
+          console.log("response from cartCard: ", response.data);
+          // setCartData(response.data.data.items);
+          // alert(response.data.message)
+          showToast(response.data.message)
+        })
+        .catch((error) => {
+          console.log("error in cart page", error);
+          alert(error.response.data.message);
+          showToast(error.response.data.message)
+        });
+    };
+    const deleteCartItem = async () => {
+      axios({
+        method: "DELETE",
+        url: `https://grocery-9znl.onrender.com/api/v1/cart/deleteItem/${props.itemId}`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        }
+      })
+        .then((response) => {
+          console.log("response from cartCard: ", response.data);
+          // setCartData(response.data.data.items);
+          showToast(response.data.message)
+          alert(response.data.message)
+        })
+        .catch((error) => {
+          console.log("error in cart page", error);
+          showToast(error.response.data.message)
+          alert(error.response.data.message);
+        });
+    };
+
+ 
   return (
     <TouchableOpacity
       className="flex-row  m-3 mx-2 bg-gray-100 p-2  shadow-xl w-[99%] rounded-md justify-between items-center  relative "
@@ -27,10 +96,10 @@ const CartCard = (props) => {
         <Text className="text-xs text-white font-bold">{props.percentage}</Text>
       </View>
       <View className="flex-row  w-[70%] justify-start justify-items-start">
-        <View className="flex-col w-24  p-1 rounded-md mr-6 bg-gray-200 ">
+        <View className="flex-col w-24  p-1 rounded-md mr-6 bg-white justify-center items-center ">
           <Image
           style={{resizeMode:"contain"}}
-            source={props.source}
+            source={{uri:props.source}}
             className="w-20 h-20  object-contain  "
           />
         </View>
@@ -45,11 +114,11 @@ const CartCard = (props) => {
             {props.weight}
           </Text>
           <View className="flex-row gap-1 items-center">
-            <Text className="text-center m-1 text-green-500 font-bold text-lg">
-              {props.amount}
+            <Text className="text-center m-1 text-green-500 font-bold">
+              {props.amount} <Text className="text-xs">Rwf</Text>
             </Text>
-            <Text className="text-center text-gray-400 line-through font-semibold">
-              {props.discounted}
+            <Text className="text-center text-gray-400 text-xs line-through font-semibold">
+              {props.discounted}Rwf
             </Text>
           </View>
         </View>

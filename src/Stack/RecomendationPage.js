@@ -91,8 +91,10 @@ const RecommendatioPage = () => {
     },
   ]);
   return (
+    <ScrollView>
   
       <View className="flex-row flex-wrap justify-between  h-full bg-white" >
+      
         <FlatList
           className="bg-white w-full h-full flex-col-reverse"
           data={productDetail}
@@ -115,6 +117,7 @@ const RecommendatioPage = () => {
           )}
         />
       </View>
+      </ScrollView>
 
   );
 };

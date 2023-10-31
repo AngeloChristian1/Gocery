@@ -1,71 +1,219 @@
-import { View, Text, Image, TouchableOpacity, TextInput } from "react-native";
-import React, { useState } from "react";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  TextInput,
+  KeyboardAvoidingView,
+  ToastAndroid
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { Feather } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
+import * as ImagePicker from "expo-image-picker";
+import axios from "axios";
+import { setAuthProfile, setAuthStatus } from "../../redux/authSlice";
+import { setItemAsync, getItemAsync } from "expo-secure-store";
 
 const EditProfile = ({ route }) => {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [DOB, setDOB] = useState("");
-  const handleEmailChange = (text) => {
-    setEmail(text);
+  const item = route.params;
+  const { authToken } = useSelector((state) => state.auth);
+  // console.log("token in edit ", authToken)
+  const dispatch = useDispatch();
+
+  const [email, setEmail] = useState(item?.email);
+  const [photo, setPhoto] = useState();
+  const [content, setContent] = useState({});
+  const [image, setImage] = useState(null);
+  const [hasGalleryPermissions, setHasGalleryPermissions] = useState(null);
+  const [name, setName] = useState(item.fullName);
+  const [newProfile, setNewProfile] = useState();
+  const [phone, setPhone] = useState(item?.phone);
+  const [DOB, setDOB] = useState(item?.DOB);
+  const [profile, setProfile] = useState({});
+  let uriLink = null;
+
+
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+
+  useEffect(() => {
+    (async () => {
+      const galleryStatus =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      setHasGalleryPermissions(galleryStatus.status === "granted");
+    })();
+  }, []);
+
+  const formData = new FormData();
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result);
+
+      // uriLink = image.assets[0].uri;
+      // console.log("uriLink:", uriLink);
+
+      // formData.append("profilePicture", {
+      //   uri: image.assets[0].uri,
+      //   type: "image/jpg",
+      //   name: new Date() + "picture",
+      // });
+      // setContent({
+      //   uri: image.assets[0],
+      //   type: "image/jpg/png",
+      //   name: new Date() + "picture",
+      // })
+    }
+
+    if (hasGalleryPermissions === false) {
+      return <Text> No Access to internal storage</Text>;
+    }
+  };
+  // console.log("content: ", content)
+
+  const handleUpdateProfile = async () => {
+    // console.log("Image assets: ", image?.uri);
+    // formData.append("profilePicture",{
+    //   uri: image.assets[0].uri,
+    //   type: "image/jpg/png",
+    //   name: new Date() + "_picture",
+    // })
+    formData.append("profilePicture",image.assets[0].uri)
+    formData.append("fullName", name);
+    formData.append("email", email);
+    formData.append("phone", phone);
+    formData.append("DOB", DOB);
+    console.log("content on press: ", content)
+    // console.log("FormData:", formData._parts[0]);
+    // console.log("uriLink", image.assets[0].uri);
+
+    await axios({
+      method: "PATCH",
+      url: `https://grocery-9znl.onrender.com/api/v1/auth/users/updateProfile`,
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Accept: "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: formData,
+      
+    })
+      .then((response) => {
+        console.log(response.data);
+        dispatch(setAuthProfile(response.data));
+        setNewProfile(response.data);
+        setItemAsync("authProfile", JSON.stringify(response.data));
+        // alert("profile updated successfully")
+        console.log("newProfile:__ ", newProfile);
+        showToast("Profile updated successfully");
+      })
+      .catch((error) => {
+        console.log("error: ", error);
+      });
   };
 
-  const item = route.params;
+  const getProfile = async () => {
+    let userProfile = await getItemAsync("authProfile");
+    setProfile(JSON.parse(userProfile));
+  };
+  useEffect(() => {
+    getProfile();
+  }, []);
+
+  // console.log("Profile from Edit:", profile);
+
   return (
-    <View className="bg-white h-full">
+    <KeyboardAvoidingView
+      className="bg-white h-full"
+      behavior={Platform.OS == "ios" ? "padding" : "height"}
+    >
       <View className="items-center justify-center gap-1 my-2 ">
-        <Image source={item.profile} className="w-40 h-40 rounded-full" />
-        <View className="bg-primary p-2 text-primary rounded-full absolute bottom-0 right-[35%]">
+        {image ? (
+          <Image
+            source={{ uri: image?.assets[0].uri }}
+            className="w-40 h-40 rounded-full bg-slate-200"
+          />
+        ) : (
+          <Image
+            source={{ uri: profile.profilePicture }}
+            className="w-40 h-40 rounded-full bg-slate-200"
+          />
+        )}
+        <TouchableOpacity
+          className="bg-primary p-2 text-primary rounded-full absolute bottom-0 right-[35%]"
+          onPress={() => {
+            pickImage();
+          }}
+        >
           <Feather name="edit-2" size={18} color="white" />
-        </View>
+        </TouchableOpacity>
       </View>
       <View className=" border-gray-300 border-[.5px] my-3 w-[95%] self-start ml-2 mt-[-2]"></View>
 
-      <View >
+      <View>
         <View className="flex flex-col  mx-10 my-4 border-gray-400 border px-2 rounded py-2 relative">
-        <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">Name:</Text>
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+            Name:
+          </Text>
           <TextInput
             placeholder="Name"
             onChangeText={(text) => setName(text)}
-            value={item.name}
+            value={name}
           />
         </View>
         <View className="flex flex-col  mx-10 my-4 border-gray-400 border px-2 rounded py-2 relative">
-        <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">Email:</Text>
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+            Email:
+          </Text>
           <TextInput
             placeholder="Email"
             onChangeText={(text) => setEmail(text)}
-            value={item.email}
+            value={email}
           />
         </View>
-       
+
         <View className="flex flex-col  mx-10  border-gray-400 border px-2 rounded py-2 relative my-4">
-        <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">Phone Number:</Text>
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+            Phone Number:
+          </Text>
           <TextInput
             placeholder="Phone Number"
             onChangeText={(text) => setPhone(text)}
-            value={item.phone}
+            value={phone}
           />
         </View>
         <View className="flex flex-col  mx-10 border-gray-400 border px-2 rounded py-2 relative my-4">
-        <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">Date Of Birth</Text>
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+            Date Of Birth
+          </Text>
           <TextInput
             placeholder="DOB"
             onChangeText={(text) => setDOB(text)}
-            value={item.DOB}
+            value={DOB}
           />
         </View>
       </View>
 
-      <View className=" gap-3 flex-col my-3 items-center justify-center absolute bottom-10 justify-self-end align-middle self-center">
-      <TouchableOpacity
-        className="text-white bg-[#08C25E] rounded flex-row  py-[6px] w-[80%]  items-center justify-center gap-2"
-      >
-        <Text className="text-white mb-2 font-bold">Update Profile</Text>
-      </TouchableOpacity>
-    </View>
-    </View>
+      <View className=" gap-3 flex-col my-3 items-center justify-center   self-center">
+        <TouchableOpacity
+          className=" bg-[#08C25E] rounded flex-col px-6  py-[6px] w-[80%]  items-center justify-center gap-2"
+          onPress={handleUpdateProfile}
+        >
+          <Text className="text-white mb-2 font-bold text-center">
+            Update Profile
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 

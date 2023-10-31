@@ -19,13 +19,11 @@ function StackNavigator() {
   return (
    
     <Stack.Navigator
-      // screenOptions={{
-      //   headerShown: false,
-      // }}
+    
     >
     <Stack.Screen
     name="Home"
-    component={FirstScreen}
+    component={Main}
     options={{
       headerShown: false,
     }}
