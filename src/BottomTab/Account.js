@@ -51,7 +51,7 @@ console.log("Profile from account:", (profile))
     <View className="pt-10 px-2 h-full bg-white">
  
       <View className="justify-center align-center flex-col flex m-2  border-gray-500 border-b-0">
-        <Text className="font-semibold text-lg text-center">Account</Text>
+        <Text className="font-semibold text-lg text-center" style={{fontFamily:"poppins_semibold"}}>Account</Text>
         <View className="w-full border-gray-300 border-[.5px] my-3"></View>
       </View>
 
@@ -64,8 +64,8 @@ console.log("Profile from account:", (profile))
           source={person?.profile}
           className="w-20 h-20 rounded-full"
         />)}
-        <Text className="font-semibold text-lg ">{profile?.fullName}</Text>
-        <Text className=" text-normal text-gray-500 mb-3">
+        <Text  style={{fontFamily:"poppins_semibold"}}className="font-semibold text-lg ">{profile?.fullName}</Text>
+        <Text className=" text-normal text-gray-500 mb-3" style={{fontFamily:"poppins_bold"}}>
         {profile?.email}
         </Text>
         <TouchableOpacity
@@ -107,7 +107,7 @@ console.log("Profile from account:", (profile))
  
       <View className="mx-2 my-4 flex flex-row justify-between">
         <TouchableOpacity onPress={handleLogout}>
-          <Text className="font-semibold text-lg ">Logout</Text>
+          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Logout</Text>
           
         </TouchableOpacity>
 

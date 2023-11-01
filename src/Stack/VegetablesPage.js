@@ -43,12 +43,13 @@ const VegetablesPage = ({ route }) => {
 
   const addItemToCart =(item)=>{
     dispatch(addToCart(item))
+    alert("item to cart")
   }
   
 
   return (
     <ScrollView>
-      <View className=" flex flex-row flex-wrap bg-white  mx-1 h-[100vh] ">
+      <View className=" flex flex-row flex-wrap bg-white  mx-1 h-[100vh]  ">
         {groceries.map((item, index) => (
           <DetailCard
             key={index}

@@ -28,7 +28,6 @@ export const AuthNavigation = () => {
   };
 
 
-
   export default RootNavigation = () => {
 const dispatch = useDispatch()
   const { authStatus, authLoaded } = useSelector((state) => state.auth);

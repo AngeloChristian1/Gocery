@@ -5,28 +5,26 @@ import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useSelector, useDispatch } from "react-redux";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
+import { decreaseQuantity, removeFromCart, addToCart, increaseQuantity } from "../redux/cartReducer";
 
 const CartCard = (props) => {
   const navigation = useNavigation();
     const [count, setCount] = useState(props.counter)
+    const [singleItem, setSingleItem] = useState(props.itemAmount)
     const { authToken } = useSelector((state) => state.auth);
     const [storageCart,setStorageCart]=useState([])
+    const dispatch = useDispatch()
 
     function showToast(message) {
       ToastAndroid.show(message, ToastAndroid.SHORT);
     }
 
-    const getCartFromStorage = async () => {
-      let userCart = await getItemAsync("userCart");
-      setStorageCart(JSON.parse(userCart));
-    };
-    useEffect(() => {
-      getCartFromStorage();
-    }, []);
+
 
     const countUp = async ()=>{
             setCount(count+1)
-            console.log("storage CartCard",storageCart)
+            await dispatch(increaseQuantity(item))
+            // console.log("storage CartCard",storageCart)
             await updateCartItem()
     }
 
@@ -93,7 +91,7 @@ const CartCard = (props) => {
       
     >
       <View className="absolute top-1 left-1 bg-orange-400 z-10 p-[2px] px-1 rounded-sm">
-        <Text className="text-xs text-white font-bold">{props.percentage}</Text>
+        <Text className="text-xs text-white font-bold" style={{fontFamily:"poppins_semibold"}}>{props.percentage}</Text>
       </View>
       <View className="flex-row  w-[70%] justify-start justify-items-start">
         <View className="flex-col w-24  p-1 rounded-md mr-6 bg-white justify-center items-center ">
@@ -104,37 +102,37 @@ const CartCard = (props) => {
           />
         </View>
         <View className=" w-[60%]  items-start justify-start gap-1">
-          <Text className="text-center text-black  text-xs font-semibold">
+          <Text className="text-center text-black  text-xs font-semibold" style={{fontFamily:"poppins_semibold"}}>
             {props.title}
           </Text>
-          <Text className="text-center text-gray-400 text-xs font-semibold">
+          <Text className="text-center text-gray-500 text-xs font-semibold" style={{fontFamily:"poppins"}}>
             {props.location}
           </Text>
-          <Text className="text-center text-gray-500  text-xs font-semibold ">
+          <Text className="text-center text-gray-500  text-xs font-semibold " style={{fontFamily:"poppins_semibold"}}>
             {props.weight}
           </Text>
           <View className="flex-row gap-1 items-center">
-            <Text className="text-center m-1 text-green-500 font-bold">
+            <Text className="text-center m-1 text-green-500 font-bold" style={{fontFamily:"poppins_semibold"}}>
               {props.amount} <Text className="text-xs">Rwf</Text>
             </Text>
-            <Text className="text-center text-gray-400 text-xs line-through font-semibold">
+            <Text className="text-center text-gray-400 text-xs line-through font-semibold" style={{fontFamily:"poppins_semibold"}}>
               {props.discounted}Rwf
             </Text>
           </View>
         </View>
       </View>
       <View className="pr-2  h-full w-[20%] flex-col ">
-        <TouchableOpacity className="flex-row justify-center rounded gap-2 my-1 mb-4">
+        <TouchableOpacity className="flex-row justify-center rounded gap-2 my-1 mb-4" onPress={props.removeItem}>
           <Icon name="clipboard-outline" color="red" size={15} />
-          <Text className="text-red-500">Delete</Text>
+          <Text className="text-red-500" style={{fontFamily:"poppins_semibold"}}>Delete</Text>
         </TouchableOpacity>
-        <View className="flex-row gap-1 text-lg bg-white h-[50px] self-end rounded justify-between align-center pr-1">
+        <View className="flex-row gap-1 text-lg bg-white h-[50px] self-end rounded justify-between align-center pr-1 ]">
           <TouchableOpacity className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
-            <Text onPress={countDown} className="text-2xl text-bold text-white px-1 self-center">-</Text>
+            <Text onPress={props.countDown} className="text-2xl text-bold text-white  self-center" style={{fontFamily:"poppins"}}>-</Text>
           </TouchableOpacity>
-          <Text className="text-2xl m-auto mx-1 text-center">{count}</Text>
-          <TouchableOpacity onPress={countUp} className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
-            <Text className="text-2xl text-white text-bold">+</Text>
+          <Text className="text-2xl m-auto mx-1 text-center  h-full pt-1" style={{fontFamily:"poppins_semibold"}}>{props.count}</Text>
+          <TouchableOpacity onPress={props.countUp} className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
+            <Text className="text-2xl text-white text-bold" style={{fontFamily:"poppins"}}>+</Text>
           </TouchableOpacity>
         </View>
       </View>

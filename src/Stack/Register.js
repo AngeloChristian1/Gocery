@@ -131,8 +131,8 @@ const Register = () => {
     <KeyboardAvoidingView className="bg-white">
       <View className="w-full border-gray-300 border-[.5px] my-3"></View>
       <View className="bg-white h-full p-3 px-5">
-        <Text className=" font-bold text-2xl  my-4 text-center">Let's get started</Text>
-        <Text className="  text-normal mb-7 mt-3 ">
+        <Text className=" font-bold text-2xl  my-4 text-center" style={{fontFamily:"poppins_semibold"}}>Let's get started</Text>
+        <Text className="  text-normal text-center mb-7 mt-3 " style={{fontFamily:"poppins"}}>
           Create account to see our top picks for you!
         </Text>
 
@@ -143,10 +143,11 @@ const Register = () => {
               onChangeText={(text) => setFullName(text)}
               value={fullName}
               className="w-[75%] py-2 "
+              style={{fontFamily:"poppins"}}
             />
             <Feather name="user" size={20} color="green" />
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {nameError}
           </Text>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
@@ -155,11 +156,13 @@ const Register = () => {
               onChangeText={(text) => setEmail(text)}
               value={email}
              className="w-[75%] py-2 "
+             style={{fontFamily:"poppins"}}
             />
             <Feather name="mail" size={20} color="green" />
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2"  style={{fontFamily:"poppins"}}>
             {emailError}
+           
           </Text>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
             <TextInput
@@ -167,10 +170,11 @@ const Register = () => {
               onChangeText={handlePhoneChange}
               value={phone}
               className="w-[75%] py-2 "
+              style={{fontFamily:"poppins"}}
             />
             <Feather name="phone" size={20} color="green" />
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {phoneError}
           </Text>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
@@ -180,12 +184,13 @@ const Register = () => {
               value={password}
               className="w-[75%] py-2 items-center"
               secureTextEntry={secureInput}
+              style={{fontFamily:"poppins"}}
             />
             <TouchableOpacity style={{marginTop:0}} onPress={()=>{setSecureInput(prev=>!prev);}} >
             {secureInput?(<Feather name="eye" size={20} color="green" />):(<Feather name="eye-off" size={20} color="green" />)}
             </TouchableOpacity>
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {passwordError}
           </Text>
 
@@ -196,12 +201,13 @@ const Register = () => {
               value={confirm}
               className="w-[75%] py-2 items-center"
               secureTextEntry={ secureInputConfirm}
+              style={{fontFamily:"poppins"}}
             />
             <TouchableOpacity style={{marginTop:0}} onPress={()=>{ setSecureInputConfirm(prev=>!prev);}} >
             {secureInputConfirm?(<Feather name="eye" size={20} color="green" />):(<Feather name="eye-off" size={20} color="green" />)}
             </TouchableOpacity>
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {confirmError}
           </Text>
         </View>
@@ -213,22 +219,22 @@ const Register = () => {
               handleRegister();
             }}
           >
-            <Text className="text-white">Create Account</Text>
+            <Text className="text-white" style={{fontFamily:"poppins_semibold"}}>Create Account</Text>
           </TouchableOpacity>
 
-          <Text className="text-center my-2">Or</Text>
+          <Text className="text-center my-2" style={{fontFamily:"poppins_semibold"}}>Or</Text>
           <TouchableOpacity className="flex-row border-[1px]  p-[6px] w-full rounded items-center justify-center gap-2 pb-4">
             <AntDesign name="apple1" size={20} color="black" />
-            <Text>Continue with Apple</Text>
+            <Text style={{fontFamily:"poppins_semibold"}}>Continue with Apple</Text>
           </TouchableOpacity>
 
           <TouchableOpacity className="flex-row border p-[6px] w-full rounded items-center justify-center gap-2 pb-4">
             <AntDesign name="google" size={20} color="black" />
-            <Text>Continue with Google</Text>
+            <Text style={{fontFamily:"poppins_semibold"}}>Continue with Google</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={()=>{navigation.navigate("Login")}}>
-          <Text className=" font-semibold text-gray-500 my-3">
-            Already have account, <Text className=" font-semibold text-primary my-3">Login </Text>
+          <Text className=" font-semibold text-gray-500 my-3" style={{fontFamily:"poppins"}}>
+            Already have account, <Text className=" font-semibold text-primary my-3" style={{fontFamily:"poppins_semibold"}}>Login </Text>
           </Text>
           </TouchableOpacity>
         </View>

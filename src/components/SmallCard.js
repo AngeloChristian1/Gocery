@@ -21,7 +21,7 @@ const SmallCard = (props) => {
             className="w-16 h-16  object-contain  border-[1px]    rounded-lg "
           />
         </View>
-        <Text className="text-center m-1 text-xs text-gray-500">{props.title}</Text>
+        <Text className="text-center m-1 text-xs text-gray-500" style={{fontFamily:"poppins_semibold"}}>{props.title}</Text>
       </View>
     </TouchableOpacity>
   );

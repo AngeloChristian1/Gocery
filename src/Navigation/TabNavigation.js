@@ -13,7 +13,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import TopBarOrderNavigator from "../Stack/MyOrder/TopNavigator";
 import { useSelector, useDispatch } from "react-redux";
-// import { addToCart, removeFromCart, incrementQuantity, decrementQuantity } from "../../redux/cartReducer";
+import { addToCart, removeFromCart, incrementQuantity, decrementQuantity } from "../redux/cartReducer";
 import axios from "axios";
 
 
@@ -26,8 +26,7 @@ function TabNavigator() {
 
 
   const dispatch =useDispatch()
-  const cart = useSelector((state)=> state.cart.cart)
-  console.log("cart from cart page:", cart)
+
 
   const fetchCart = async () => {
     axios({
@@ -38,12 +37,12 @@ function TabNavigator() {
       },
     })
       .then((response) => {
-        console.log("response from cart: ", response.data.data.items);
+        // console.log("response from cart: ", response.data.data.items);
         setCartData(response.data.data.items);
+        
       })
       .catch((error) => {
         console.log("error in cart page", error);
-        console.log("error from tab:",error.response.data.message);
       });
   };
   
@@ -53,6 +52,21 @@ function TabNavigator() {
   
     }
   }, [authToken]);
+
+  useEffect(()=>{
+    if(cartData){
+      cartData.map((item)=>{
+        key=item._id
+        console.log("items in cart",item)
+        dispatch(addToCart(item))
+      })
+    }
+  },[])
+
+  const cart = useSelector((state)=> state.cart.cart)
+  console.log("redux cart",cart)
+
+
   return (
     <Tab.Navigator
     className="bg-green-200"
@@ -69,14 +83,11 @@ function TabNavigator() {
           tabBarLabel: "",
           tabBarIcon: ({ focused }) => (
             <View className="text-center  items-center">
-              <Fontisto
-                name="shopping-store"
-                size={20}
-                color={focused ? "#08C25E" : "gray"}
-              />
+            <MaterialCommunityIcons name="storefront-outline" size={24} color={focused ? "#08C25E" : "gray"} />
+
               <Text
                 className="my-1 text-xs text-gray-500"
-                style={{ color: focused ? "#08C25E" : "gray" }}
+                style={{ color: focused ? "#08C25E" : "gray",fontFamily:"poppins" }}
               >
                 Shop
               </Text>
@@ -93,7 +104,7 @@ function TabNavigator() {
 
           tabBarIcon: ({ focused }) => (
             <View className="text-center  items-center rounded-full relative ">
-           {cartData.length > 0 && <Text className="bg-red-500 absolute text-white rounded-full text-[10px]  text-center items-center justify-center z-10 right-0 px-1">{cartData.length}</Text>}
+           {cart.length > 0 && <Text className="bg-red-500 absolute text-white rounded-full text-[10px]  text-center items-center justify-center z-10 right-0 px-1">{cart.length}</Text>}
               <FontAwesome5
                 name="shopping-basket"
                 size={20}
@@ -101,7 +112,8 @@ function TabNavigator() {
               />
               <Text
                 className="my-1 text-xs text-gray-500 text-center"
-                style={{ color: focused ? "#08C25E" : "gray" }}
+                style={{ color: focused ? "#08C25E" : "gray",fontFamily:"poppins" }}
+                
               >
                 Cart
               </Text>
@@ -123,7 +135,8 @@ function TabNavigator() {
               />
               <Text
                 className="my-1 text-xs text-gray-500 text-center w-[100%]"
-                style={{ color: focused ? "#08C25E" : "gray" }}
+                style={{ color: focused ? "#08C25E" : "gray",fontFamily:"poppins" }}
+
               >
                 My Order
               </Text>
@@ -145,7 +158,8 @@ function TabNavigator() {
               />
               <Text
                 className="my-1 text-xs  text-center w-[100%] "
-                style={{ color: focused ? "#08C25E" : "gray" }}
+                style={{ color: focused ? "#08C25E" : "gray",fontFamily:"poppins" }}
+
               >
                 Account
               </Text>

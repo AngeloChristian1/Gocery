@@ -14,11 +14,11 @@ const DetailCard = (props) => {
     <View>
       <TouchableOpacity
         onPress={props.onPress}
-        className="flex-col  m-3 mx-2 border-[1px] border-gray-200 ring-2  p-2  shadow-xl  px-1 rounded-md justify-center items-center relative"
+        className="flex-col  m-3 mx-2 border-[1px] border-gray-200 ring-2  p-2  px-3 pb-0 shadow-xl  rounded-md justify-center items-center relative"
         style={{ elevation: 5 }}
       >
         <View className="absolute top-1 left-1 bg-orange-500 p-[2px] px-1 rounded-sm z-10">
-          <Text className="text-xs text-white font-bold">
+          <Text className="text-xs text-white font-bold" style={{fontFamily:"poppins_semibold"}}>
             {props.percentage}
           </Text>
         </View>
@@ -30,29 +30,29 @@ const DetailCard = (props) => {
           />
         </View>
         <View className=" w-full items-start justify-start gap-1">
-          <View className="flex-row gap-1 items-center">
+          <View className="flex-row gap-1 items-center" style={{fontFamily:"poppins"}}>
             <Text className="text-center m-1 text-green-500 font-bold text-l">
               {props.amount} Rwf
             </Text>
-            <Text className="text-center m-1 text-gray-400 line-through text-xs font-semibold">
+            <Text className="text-center m-1 text-gray-400 line-through text-xs font-semibold" style={{fontFamily:"poppins"}}>
               {props.discounted}
             </Text>
           </View>
-          <Text className="text-center text-gray-400  text-xs font-semibold">
+          <Text className="text-center text-gray-600  text-xs font-semibold" style={{fontFamily:"poppins_semibold"}}>
             {props.title}
           </Text>
-          <Text className="text-center text-gray-400 text-xs font-semibold">
+          <Text className="text-center text-gray-500 text-xs font-semibold" style={{fontFamily:"poppins"}}>
             {props.location}
           </Text>
-          <Text className="text-center text-gray-500  text-xs font-semibold ">
+          <Text className="text-center text-gray-500  text-xs font-semibold " style={{fontFamily:"poppins"}}>
             {props.weight}
           </Text>
-          <TouchableOpacity className="flex flex-row align-center gap-2 bg-primary w-[110%]px-2 rounded justify-center px-1"
+          <TouchableOpacity className="flex flex-row align-center gap-2 bg-primary w-0%] rounded justify-center px-3"
           onPress={props.addCart}
           >
-            <Text className="text-xs mr-5">Add To cart</Text>
+            <Text className="text-xs mr-5 text-white font-semibold" style={{fontFamily:"poppins_semibold"}}>Add To cart</Text>
 
-            <Ionicons name="cart" size={20} color="black" />
+            <Ionicons name="cart" size={20} color="white" />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>

@@ -161,44 +161,48 @@ const EditProfile = ({ route }) => {
 
       <View>
         <View className="flex flex-col  mx-10 my-4 border-gray-400 border px-2 rounded py-2 relative">
-          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 " style={{fontFamily:"poppins_semibold"}}>
             Name:
           </Text>
           <TextInput
             placeholder="Name"
             onChangeText={(text) => setName(text)}
             value={name}
+            style={{fontFamily:"poppins"}}
           />
         </View>
         <View className="flex flex-col  mx-10 my-4 border-gray-400 border px-2 rounded py-2 relative">
-          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 " style={{fontFamily:"poppins_semibold"}}>
             Email:
           </Text>
           <TextInput
             placeholder="Email"
             onChangeText={(text) => setEmail(text)}
             value={email}
+            style={{fontFamily:"poppins"}}
           />
         </View>
 
         <View className="flex flex-col  mx-10  border-gray-400 border px-2 rounded py-2 relative my-4">
-          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 " style={{fontFamily:"poppins_semibold"}}>
             Phone Number:
           </Text>
           <TextInput
             placeholder="Phone Number"
             onChangeText={(text) => setPhone(text)}
             value={phone}
+            style={{fontFamily:"poppins"}}
           />
         </View>
         <View className="flex flex-col  mx-10 border-gray-400 border px-2 rounded py-2 relative my-4">
-          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 ">
+          <Text className="absolute text-gray-500 text-xs left-2 top-[-10px] bg-white px-1 " style={{fontFamily:"poppins_semibold"}}>
             Date Of Birth
           </Text>
           <TextInput
             placeholder="DOB"
             onChangeText={(text) => setDOB(text)}
             value={DOB}
+            style={{fontFamily:"poppins"}}
           />
         </View>
       </View>
@@ -208,7 +212,7 @@ const EditProfile = ({ route }) => {
           className=" bg-[#08C25E] rounded flex-col px-6  py-[6px] w-[80%]  items-center justify-center gap-2"
           onPress={handleUpdateProfile}
         >
-          <Text className="text-white mb-2 font-bold text-center">
+          <Text className="text-white mb-2 font-bold text-center" style={{fontFamily:"poppins_semibold"}}>
             Update Profile
           </Text>
         </TouchableOpacity>

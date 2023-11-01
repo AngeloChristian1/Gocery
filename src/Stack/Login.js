@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -84,9 +84,10 @@ const Login = () => {
         dispatch(setAuthStatus(true));
         setItemAsync("authToken", response.data.access_token);
         setItemAsync("authProfile", JSON.stringify(response.data.user));
+        setIsLoading(false);
       })
       .catch((error) => {
-        setIsLoading(false);
+        
         console.log("error: ", error);
       });
   };
@@ -96,7 +97,7 @@ const Login = () => {
     <KeyboardAvoidingView className="bg-white">
       <View className="w-full border-gray-300 border-[.5px] my-3"></View>
       <View className="bg-white h-full p-3 px-5">
-        <Text className=" font-bold text-2xl my-6 text-center">Login to continue</Text>
+        <Text className=" font-bold text-2xl my-6 text-center" style={{fontFamily:"poppins_semibold"}}>Login to continue</Text>
 
         <View>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
@@ -105,11 +106,13 @@ const Login = () => {
               onChangeText={(text) => setEmail(text)}
               value={email}
               className="w-[75%] py-2 "
+              style={{fontFamily:"poppins"}}
             />
             <Feather name="mail" size={20} color="green" />
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {emailError}
+            
           </Text>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
             <TextInput
@@ -118,13 +121,14 @@ const Login = () => {
               value={password}
               className="w-[75%] py-2 items-center"
               secureTextEntry={secureInput}
+              style={{fontFamily:"poppins"}}
             />
             <TouchableOpacity style={{marginTop:0}} onPress={()=>{setSecureInput(prev=>!prev);}} >
             {secureInput?(<Feather name="eye" size={20} color="green" />):(<Feather name="eye-off" size={20} color="green" />)}
             </TouchableOpacity>
             
           </View>
-          <Text className="text-red-600 text-sm mt-[-10px] mx-2">
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
             {passwordError}
           </Text>
         </View>
@@ -132,14 +136,15 @@ const Login = () => {
           <TouchableOpacity
             className="text-white bg-[#08C25E] rounded flex-row  py-[6px] w-full  items-center justify-center gap-2"
             onPress={() => {
+              ()=>{setIsValid(true)}
               Validator();
               handleLogin();
             }}
           >
-            <Text className="text-white mb-2 font-bold">Log In</Text>
+            {!isLoading?(<Text className="text-white mb-2 font-bold" style={{fontFamily:"poppins_semibold"}}>Log In</Text>):(<ActivityIndicator color="white"/>)}
           </TouchableOpacity>
 
-          <Text className=" font-semibold text-primary my-3">
+          <Text className=" font-semibold text-primary my-3" style={{fontFamily:"poppins_semibold"}}>
             Forgot password?
           </Text>
           <TouchableOpacity
@@ -147,9 +152,9 @@ const Login = () => {
               navigation.navigate("Register");
             }}
           >
-            <Text className=" font-semibold text-gray-500 my-3">
-              Don't have account,{" "}
-              <Text className=" font-semibold text-primary my-3">signUp</Text>
+            <Text className=" font-semibold text-gray-500 my-3" style={{fontFamily:"poppins_semibold"}}>
+              Don't have account,
+              <Text className=" font-semibold text-primary my-3" style={{fontFamily:"poppins_semibold"}}> signUp</Text>
             </Text>
           </TouchableOpacity>
         </View>

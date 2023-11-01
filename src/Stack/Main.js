@@ -102,6 +102,8 @@ const Main = () => {
                 placeholder="Search for products"
                 onChangeText={handleSearchChange}
                 value={searchInput}
+                style={{fontFamily:"poppins"}}
+                className="w-[80%]"
               />
               <Ionicons name="ios-search-sharp" size={24} color="white" />
             </View>
@@ -109,7 +111,7 @@ const Main = () => {
           </View>
           <View className="w-full mx-auto flex-row justify-between px-5 h-[70%] self-center gap-4">
             <View className="w-[50%] h-[75%] items-center  justify-between gap-4">
-              <Text className="font-extrabold text-3xl w-full text-white">
+              <Text className="font-extrabold text-3xl w-full text-white" style={{fontFamily:"poppins_semibold"}}>
                 BANANA 5% OFF
               </Text>
               <TouchableOpacity
@@ -118,7 +120,7 @@ const Main = () => {
                   navigation.navigate("SingleItem", banana);
                 }}
               >
-                <Text className="font-extrabold text-white text-center">
+                <Text className="font-extrabold text-white text-center" style={{fontFamily:"poppins_semibold"}}>
                   BUY NOW
                 </Text>
               </TouchableOpacity>
@@ -137,7 +139,7 @@ const Main = () => {
             navigation.navigate("Recommendation");
           }}
         >
-          <Text className="text-right px-5 my-2">View Recommended</Text>
+          <Text className="text-right px-5 my-2" style={{fontFamily:"poppins_semibold"}}>View Recommended</Text>
         </TouchableOpacity>
         <View className="flex-col items-center justify-center my-3">
           <Image
@@ -161,7 +163,7 @@ const Main = () => {
         </View>):(<ActivityIndicator  className="h-[30%]" color="green" size="large"/>)}
         <View></View>
         <View className="p-2 mx-2">
-          <Text className="text-xl font-bold">For your dinner</Text>
+          <Text className="text-xl font-bold" style={{fontFamily:"poppins_semibold"}}>For your dinner</Text>
         </View>
       </View>
     </ScrollView>

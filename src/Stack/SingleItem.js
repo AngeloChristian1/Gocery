@@ -15,7 +15,6 @@ const SingleItem = ({route, navigation}) => {
   // console.log("cart from single item:", cart)
   // console.log("grocery item: ",item)
 
-
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
@@ -63,11 +62,7 @@ const SingleItem = ({route, navigation}) => {
       .then((response) => {
         console.log(response.data);
         showToast(response.data.message)
-        // dispatch(setAuthProfile(response.data.user));
-        // dispatch(setAuthToken(response.data.access_token));
-        // dispatch(setAuthStatus(true));
-        // setItemAsync("authToken", response.data.access_token);
-        // setItemAsync("authProfile", JSON.stringify(response.data.user));
+       
       })
       .catch((error) => {
         console.log("error adding to cart: ", error);
@@ -75,10 +70,12 @@ const SingleItem = ({route, navigation}) => {
       });
   };
 
-
+let groc =  {"_id": "653b9132fce2386e57532305", "count": 5, "grocery": {"__v": 0, "_id": "6537de18b79326529c5c40da", "amount": "1 pack", "category": "65357e54706788961a777b8b", "description": "Type of bread that is commonly used for making sandwiches", "name": "Italian Bread", "picture": "https://res.cloudinary.com/dkakh1m7u/image/upload/v1698160151/uploads/x99jh0inn9scggwbbclu.png", "price": 1000}}
   const addItemToCart =(grocery)=>{
     dispatch(addToCart(grocery))
+    showToast("item added to redux")
   }
+  // addItemToCart(groc)
   return (
     <View className="flex-col  h-full bg-white p-2  shadow-xl w-full rounded-md  items-center relative">
       <View className="flex-row w-full justify-center items-center h-[35%]  p-1 rounded-md  shadow-inner " style={{backgroundColor: `${item.color}`}} >
@@ -121,14 +118,17 @@ const SingleItem = ({route, navigation}) => {
           <Text className=" text-gray-400 text-xs font-semibold">
             Description
           </Text>
-          <Text className=" text-gray-500  font-semibold px-3 my-1">
+          <Text className=" text-gray-600  font-semibold px-3 my-1" style={{fontFamily:"work_sans"}}>
             {item.description}
           </Text>
         </View>
       </View>
       <View className="w-full justify-self-end self-end my-3  rounded absolute bottom-0 left-2 mx-auto">
       <TouchableOpacity className="bg-primary rounded w-full p-2 items-center justify-self-end" 
-      onPress={handleAddToCart}>
+      onPress={()=>{
+        addItemToCart(grocery)
+        // handleAddToCart()
+      }}>
       <Text className="font-bold text-white"> ADD TO CART</Text>
       </TouchableOpacity>
       </View>
