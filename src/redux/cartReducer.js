@@ -1,4 +1,7 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+
+
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -8,49 +11,48 @@ export const cartSlice = createSlice({
 
   reducers: {
     addToCart: (state, action) => {
-        const { id } = action.payload;
-        const itemInCart = state.cart.find((item) => item.id === id);
+        const { _id } = action.payload;
+        const itemInCart = state.cart.find((item) => item._id === _id);
       
         if (itemInCart) {
           // Create a new array with the updated item quantity
           state.cart = state.cart.map((item) =>
-            item.id === id ? { ...item, count: item.count + 1 } : item
+            item._id === _id ? { ...item, count: item.count + 1 } : item
           );
-        } else {
+        } else
+        
+        {
           state.cart.push({ ...action.payload, count: 1 });
         }
+        state.cart.push({ ...action.payload, count: 1 });
       },
 
-    removeFromCart: (state, action) => {
-      const removeFromCart = state.cart.filter(
-        (item) => item.id == action.payload.id
-      );
-      state.cart = removeFromCart;
-    },
 
     incrementQuantity: (state, action) => {
-      const { id } = action.payload;
+      const { _id } = action.payload;
       state.cart = state.cart.map((item) =>
-            item.id === id ? { ...item, count: item.count + 1 } : item
+            item._id === _id ? { ...item, count: item.count + 1 } : item
           );
     },
 
     decrementQuantity: (state, action) => {
       const itemInCart = state.cart.find(
-        (item) => item.id == action.payload.id
+        (item) => item._id == action.payload._id
       );
-      if (itemInCart.count == 1) {
-        const removeFromCart = state.cart.filter(
-          (item) => item.id == action.payload.id
-        );
-        state.cart = removeFromCart;
-      } else { 
+      // if (itemInCart.count == 1) {
+      //   const removeFromCart = state.cart.filter(
+      //     (item) => item._id == action.payload._id
+      //   );
+      //   state.cart = removeFromCart;
+      // } else
+       { 
         itemInCart.count--;
       }
     },
     clearCart:(state, action)=> {
       return [];
     },
+  
   },
 });
 

@@ -6,39 +6,49 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { useSelector, useDispatch } from "react-redux";
 import { getItemAsync, setItemAsync } from "expo-secure-store";
 import { decreaseQuantity, removeFromCart, addToCart, increaseQuantity } from "../redux/cartReducer";
-
+import { decrementQuantity, incrementQuantity } from "../redux/cartReducer";
+import { useFocusEffect } from "@react-navigation/native";
 const CartCard = (props) => {
   const navigation = useNavigation();
     const [count, setCount] = useState(props.counter)
-    const [singleItem, setSingleItem] = useState(props.itemAmount)
+    const[price, setPrice] = useState(props.itemPrice)
     const { authToken } = useSelector((state) => state.auth);
-    const [storageCart,setStorageCart]=useState([])
     const dispatch = useDispatch()
 
     function showToast(message) {
       ToastAndroid.show(message, ToastAndroid.SHORT);
     }
 
-
-
-    const countUp = async ()=>{
-            setCount(count+1)
-            await dispatch(increaseQuantity(item))
-            // console.log("storage CartCard",storageCart)
-            await updateCartItem()
-    }
-
-    // decrementing item
-    const countDown = async ()=>{
-      if(count >0){
-         setCount(count-1)
-        await updateCartItem()
-      }
-        if(count === 0){
-            alert("item will be removed from list")
-            showToast("item will be removed from list")
-        }   
-    }
+    const fetchCart = async () => {
+      axios({
+        method: "GET",
+        url: `https://grocery-9znl.onrender.com/api/v1/cart/`,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      }) 
+        .then((response) => {
+          setCartData(response.data.data.items);
+          console.log('CART DATA', response.data.data.items)
+          showToast("items in cart");   
+          setCartId(response.data.data)
+          setIsLoading(false);
+             
+          cartData.map((item)=>{
+            dispatch(addItemToCart(item))
+          })
+        })
+        .catch((error) => {
+          console.log("error in cart page", error);
+          showToast(error.response.data.message);
+        });
+    };
+    useFocusEffect(
+      React.useCallback(() => {
+        // Fetch cart data or perform any other actions when the screen is focused.
+        fetchCart(); // Example: Fetch cart data
+      }, [])
+    ); 
 
     const updateCartItem = async () => {
       axios({
@@ -53,8 +63,6 @@ const CartCard = (props) => {
       })
         .then((response) => {
           console.log("response from cartCard: ", response.data);
-          // setCartData(response.data.data.items);
-          // alert(response.data.message)
           showToast(response.data.message)
         })
         .catch((error) => {
@@ -63,26 +71,22 @@ const CartCard = (props) => {
           showToast(error.response.data.message)
         });
     };
-    const deleteCartItem = async () => {
-      axios({
-        method: "DELETE",
-        url: `https://grocery-9znl.onrender.com/api/v1/cart/deleteItem/${props.itemId}`,
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        }
-      })
-        .then((response) => {
-          console.log("response from cartCard: ", response.data);
-          // setCartData(response.data.data.items);
-          showToast(response.data.message)
-          alert(response.data.message)
-        })
-        .catch((error) => {
-          console.log("error in cart page", error);
-          showToast(error.response.data.message)
-          alert(error.response.data.message);
-        });
-    };
+
+    const countUp = ()=>{
+      let y = price
+      setCount(count+1)
+      updateCartItem()
+      setPrice(price + y)
+      // dispatch(decrementQuantity(props.item))
+    }
+    const countDown = ()=>{
+      setCount(count - 1)
+      setPrice(price / 2)
+      updateCartItem()
+      // dispatch(incrementQuantity(props.item))
+    }
+
+
 
  
   return (
@@ -113,7 +117,7 @@ const CartCard = (props) => {
           </Text>
           <View className="flex-row gap-1 items-center">
             <Text className="text-center m-1 text-green-500 font-bold" style={{fontFamily:"poppins_semibold"}}>
-              {props.amount} <Text className="text-xs">Rwf</Text>
+              {price} <Text className="text-xs">Rwf</Text>
             </Text>
             <Text className="text-center text-gray-400 text-xs line-through font-semibold" style={{fontFamily:"poppins_semibold"}}>
               {props.discounted}Rwf
@@ -128,10 +132,10 @@ const CartCard = (props) => {
         </TouchableOpacity>
         <View className="flex-row gap-1 text-lg bg-white h-[50px] self-end rounded justify-between align-center pr-1 ]">
           <TouchableOpacity className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
-            <Text onPress={props.countDown} className="text-2xl text-bold text-white  self-center" style={{fontFamily:"poppins"}}>-</Text>
+            <Text onPress={countDown} className="text-2xl text-bold text-white  self-center" style={{fontFamily:"poppins"}}>-</Text>
           </TouchableOpacity>
-          <Text className="text-2xl m-auto mx-1 text-center  h-full pt-1" style={{fontFamily:"poppins_semibold"}}>{props.count}</Text>
-          <TouchableOpacity onPress={props.countUp} className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
+          <Text className="text-2xl m-auto mx-1 text-center  h-full pt-1" style={{fontFamily:"poppins_semibold"}}>{count}</Text>
+          <TouchableOpacity onPress={countUp} className="bg-gray-800 flex-col h-10 rounded items-center justify-center p-1 ">
             <Text className="text-2xl text-white text-bold" style={{fontFamily:"poppins"}}>+</Text>
           </TouchableOpacity>
         </View>

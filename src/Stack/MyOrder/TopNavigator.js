@@ -9,33 +9,29 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Tab = createMaterialTopTabNavigator();
 
 
-
 function MyTabs() {
   return (
 
     <Tab.Navigator
       initialRouteName="Orders"
       tabBarOptions={{
-        activeTinitColor: "#e91e63",
+        activeTinitColor: "#08C25E",
         labelStyle: { fontSize: 12 },
-        style: { backgroundColor: "white", marginTop:50 },
+        style: { backgroundColor: "white", marginTop:50, fontFamily:"poppins" },
         
       }}
-    >
-      <Tab.Screen
-        name="Completed"
-        component={Completed}
-        options={{ tabBarLabel: "Completed" }}
-      />
-      <Tab.Screen
+    > 
+    <Tab.Screen
         name="InProgress"
         component={InProgress}
         options={{ tabBarLabel: "In Progress" }}
       />
+  
+     
       <Tab.Screen
-        name="Canceled"
+        name="History"
         component={Canceled}
-        options={{ tabBarLabel: "Canceled" }}
+        options={{ tabBarLabel: "History", style:{fontFamily:"poppins"} }}
       />
     </Tab.Navigator>
 

@@ -162,8 +162,11 @@ const Main = () => {
           })}
         </View>):(<ActivityIndicator  className="h-[30%]" color="green" size="large"/>)}
         <View></View>
-        <View className="p-2 mx-2">
-          <Text className="text-xl font-bold" style={{fontFamily:"poppins_semibold"}}>For your dinner</Text>
+        <View className="p-2 mx-2" >
+        < TouchableOpacity onPress={()=>{navigation.navigate("statistics")}}>
+        <Text className="text-xl font-bold" style={{fontFamily:"poppins_semibold"}}>For your dinner</Text>
+        
+        </TouchableOpacity>  
         </View>
       </View>
     </ScrollView>

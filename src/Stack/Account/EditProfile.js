@@ -25,6 +25,7 @@ const EditProfile = ({ route }) => {
   const [photo, setPhoto] = useState();
   const [content, setContent] = useState({});
   const [image, setImage] = useState(null);
+  const [imageUri, setImageUri] = useState(null);
   const [hasGalleryPermissions, setHasGalleryPermissions] = useState(null);
   const [name, setName] = useState(item.fullName);
   const [newProfile, setNewProfile] = useState();
@@ -58,6 +59,7 @@ const EditProfile = ({ route }) => {
 
     if (!result.canceled) {
       setImage(result);
+      setImageUri(result.assets[0].uri)
 
       // uriLink = image.assets[0].uri;
       // console.log("uriLink:", uriLink);
@@ -78,20 +80,20 @@ const EditProfile = ({ route }) => {
       return <Text> No Access to internal storage</Text>;
     }
   };
-  // console.log("content: ", content)
+  console.log("imag URI : ", imageUri)
 
   const handleUpdateProfile = async () => {
     // console.log("Image assets: ", image?.uri);
-    // formData.append("profilePicture",{
-    //   uri: image.assets[0].uri,
-    //   type: "image/jpg/png",
-    //   name: new Date() + "_picture",
-    // })
-    formData.append("profilePicture",image.assets[0].uri)
+    formData.append("picture",{
+      uri: image?.assets[0].uri,
+      type: "image/jpg/png",
+      name: new Date() + "_picture",
+    })
+    // formData.append("profilePicture",image.assets[0].uri)
     formData.append("fullName", name);
     formData.append("email", email);
     formData.append("phone", phone);
-    formData.append("DOB", DOB);
+    formData.append("DateOfBirth", DOB);
     console.log("content on press: ", content)
     // console.log("FormData:", formData._parts[0]);
     // console.log("uriLink", image.assets[0].uri);

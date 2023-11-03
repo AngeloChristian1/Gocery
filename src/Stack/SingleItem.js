@@ -48,6 +48,7 @@ const SingleItem = ({route, navigation}) => {
 
   
   const handleAddToCart = async () => {
+    // dispatch(addToCart(grocery))
     axios({
       method: "POST",
       url: `https://grocery-9znl.onrender.com/api/v1/cart/add`,
@@ -126,8 +127,8 @@ let groc =  {"_id": "653b9132fce2386e57532305", "count": 5, "grocery": {"__v": 0
       <View className="w-full justify-self-end self-end my-3  rounded absolute bottom-0 left-2 mx-auto">
       <TouchableOpacity className="bg-primary rounded w-full p-2 items-center justify-self-end" 
       onPress={()=>{
-        addItemToCart(grocery)
-        // handleAddToCart()
+        // addItemToCart(grocery)
+        handleAddToCart()
       }}>
       <Text className="font-bold text-white"> ADD TO CART</Text>
       </TouchableOpacity>

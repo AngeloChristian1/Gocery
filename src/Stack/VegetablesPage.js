@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, FlatList } from "react-native";
+import { View, Text, ScrollView, FlatList, ToastAndroid } from "react-native";
 import React, { useState, useEffect } from "react";
 import DetailCard from "../components/DetailCard";
 import { useNavigation } from "@react-navigation/native";
@@ -15,6 +15,35 @@ const VegetablesPage = ({ route }) => {
   console.log("cart:", cart)
   const { authToken } = useSelector((state) => state.auth);
   const category = route.params;
+
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
+
+  const fetchCart = async () => {
+    axios({
+      method: "GET",
+      url: `https://grocery-9znl.onrender.com/api/v1/cart/`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    }) 
+      .then((response) => {
+        setCartData(response.data.data.items);
+        console.log('CART DATA', response.data.data.items)
+        showToast("items in cart");   
+        setCartId(response.data.data)
+        setIsLoading(false);
+           
+        cartData.map((item)=>{
+          dispatch(addItemToCart(item))
+        })
+      })
+      .catch((error) => {
+        console.log("error in cart page", error);
+        showToast(error.response.data.message);
+      });
+  };
  
   const fetchGroceries = async () => {
     axios({
@@ -41,10 +70,34 @@ const VegetablesPage = ({ route }) => {
     }
   }, [authToken]);
 
-  const addItemToCart =(item)=>{
-    dispatch(addToCart(item))
-    alert("item to cart")
-  }
+  // const addItemToCart =(item)=>{
+  //   dispatch(addToCart(item))
+  //   alert("item to cart")
+  // }
+
+  const handleAddToCart = async (grocery) => {
+    axios({
+      method: "POST",
+      url: `https://grocery-9znl.onrender.com/api/v1/cart/add`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+      data: {
+        groceryId:grocery._id,
+        count:1,
+      },
+    })
+      .then((response) => {
+        console.log(response.data);
+        showToast(response.data.message)
+       
+      })
+      .catch((error) => {
+        console.log("error adding to cart: ", error);
+        showToast( error.response.data.message)
+      });
+  };
+
   
 
   return (
@@ -65,7 +118,12 @@ const VegetablesPage = ({ route }) => {
             title={item.name}
             location="From Rwanda"
             weight="200gr"
-            addCart={()=>addItemToCart(item)}
+            addCart={()=>{
+              handleAddToCart(item)
+              fetchCart()
+            }
+            
+            }
           />
         ))}
       </View>

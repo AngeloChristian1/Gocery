@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView, ActivityIndicator } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -6,6 +6,7 @@ import { validate } from "react-native-web/dist/cjs/exports/StyleSheet/validate"
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+
 import {
   setAuthProfile,
   setAuthToken,
@@ -21,9 +22,11 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [location, setLocation] = useState("");
   const [password, setPassword] = useState("");
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [locationError, setLocationError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [confirmError, setconfirmError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -52,6 +55,9 @@ const Register = () => {
   const handleConfirmChange = (text) => {
     setConfirm(text);
   };
+  const handleLocationChange = (text) => {
+    setLocation(text);
+  };
 
   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
@@ -75,12 +81,16 @@ const Register = () => {
       setPhoneError("Please input phone number");
       console.log(phoneError);
     }
+    else if (location.length === 0) {
+      setEmailError("Location is required");
+      console.log(locationError);
+    }
     else if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
       console.log(passwordError);
     } else if (password.indexOf(" ") >= 0) {
       setPasswordError("Password can't contain space");
-      console.log(passwordError);
+      console.log(passwordError); 
     } else if (password !== confirm) {
       setconfirmError("Passwords do not match");
       console.log(confirmError);
@@ -93,7 +103,9 @@ const Register = () => {
       setconfirmError("");
       setPhoneError("");
       setNameError("");
+      setLocationError("")
       // navigation.navigate("Login");
+      setIsLoading(true);
     }
   };
 
@@ -106,6 +118,8 @@ const Register = () => {
         password,
         fullName,
         phone,
+        location,
+        // role:"manager"
       },
     })
       .then((response) => {
@@ -179,6 +193,19 @@ const Register = () => {
           </Text>
           <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
             <TextInput
+              placeholder="Location"
+              onChangeText={handleLocationChange}
+              value={location}
+              className="w-[75%] py-2 "
+              style={{fontFamily:"poppins"}}
+            />
+            <Feather name="pin" size={20} color="green" />
+          </View>
+          <Text className="text-red-600 text-sm mt-[-10px] mx-2" style={{fontFamily:"poppins"}}>
+            {locationError}
+          </Text>
+          <View className="flex-row px-2 border-[1px] border-gray-400 justify-between  mb-3 rounded items-center">
+            <TextInput
               placeholder="Password"
               onChangeText={handlePasswordChange}
               value={password}
@@ -219,7 +246,13 @@ const Register = () => {
               handleRegister();
             }}
           >
+
+          {isLoading ? (
+            <ActivityIndicator color={"#fff"} size={20} />
+          ) : (
             <Text className="text-white" style={{fontFamily:"poppins_semibold"}}>Create Account</Text>
+          )}
+           
           </TouchableOpacity>
 
           <Text className="text-center my-2" style={{fontFamily:"poppins_semibold"}}>Or</Text>

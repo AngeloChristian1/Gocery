@@ -49,22 +49,28 @@ const Login = () => {
   const Validator = () => {
     if (email.length === 0) {
       setEmailError("Email is required");
+      setIsLoading(false);
       console.log(emailError);
     } else if (!emailPattern.test(email)) {
       setEmailError("Invalid Email");
+      setIsLoading(false);
       console.log(emailError);
     } else if (email.indexOf(" ") >= 0) {
       setEmailError("Email can't contain space");
+      setIsLoading(false);
       console.log(emailError);
     } else if (password.length < 6) {
       setPasswordError("Password must be at least 6 characters");
+      setIsLoading(false);
       console.log(passwordError);
     } else if (password.indexOf(" ") >= 0) {
       setPasswordError("Password can't contain space");
+      setIsLoading(false);
       console.log(passwordError);
     } else {
       setEmailError("");
       setPasswordError("");
+      setIsLoading(true);
     }
   };
 
@@ -91,6 +97,10 @@ const Login = () => {
         console.log("error: ", error);
       });
   };
+
+  const { authStatus, authProfile } = useSelector((state) => state.auth);
+  console.log("authProfile from login: ",authProfile);
+
 
   return (
     
@@ -137,11 +147,17 @@ const Login = () => {
             className="text-white bg-[#08C25E] rounded flex-row  py-[6px] w-full  items-center justify-center gap-2"
             onPress={() => {
               ()=>{setIsValid(true)}
+              
               Validator();
               handleLogin();
             }}
           >
-            {!isLoading?(<Text className="text-white mb-2 font-bold" style={{fontFamily:"poppins_semibold"}}>Log In</Text>):(<ActivityIndicator color="white"/>)}
+          {isLoading ? (
+            <ActivityIndicator color={"#fff"} size={20} />
+          ) : (
+            <Text className="text-white mb-2 font-bold" style={{fontFamily:"poppins_semibold"}}>Log In</Text>
+          )}
+            
           </TouchableOpacity>
 
           <Text className=" font-semibold text-primary my-3" style={{fontFamily:"poppins_semibold"}}>
