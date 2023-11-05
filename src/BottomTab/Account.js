@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, FlatList, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, Image, FlatList, ScrollView, Alert } from "react-native";
 import React, {useState, useEffect} from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import AccountText from "../components/AccountText";
@@ -7,9 +7,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {deleteItemAsync,  setItemAsync, getItemAsync} from "expo-secure-store"
 import { setAuthLoaded,setAuthStatus, setAuthProfile, setAuthToken } from "../redux/authSlice";
 
+
+
 const Account = () => {
   const dispatch = useDispatch();
   const [profile, setProfile]= useState({})
+  const { authProfile } = useSelector((state) => state.auth);
   // const [email, setEmail]= useState("")
   const navigation = useNavigation();
   const [person, setPerson] =useState({
@@ -29,6 +32,7 @@ const handleLogout = ()=>{
   dispatch(setAuthProfile(null))
   dispatch(setAuthStatus(false))
   alert("logout successful")
+  
 }
 
 ;
@@ -46,8 +50,18 @@ useEffect(
 
 console.log("Profile from account:", (profile))
 
+const LogOutAlert = () =>
+Alert.alert('Log Out', 'Are You  sure You want to Log out', [
+  {
+    text: 'Cancel',
+    onPress: () => console.log('Cancel Pressed'),
+    style: 'cancel',
+  },
+  {text: 'OK', onPress: () =>  handleLogout()},
+]);
+
   return (
-    <ScrollView>
+    <ScrollView className="pt-10 px-2 h-full bg-white">
     <View className="pt-10 px-2 h-full bg-white">
  
       <View className="justify-center align-center flex-col flex m-2  border-gray-500 border-b-0">
@@ -55,14 +69,14 @@ console.log("Profile from account:", (profile))
         <View className="w-full border-gray-300 border-[.5px] my-3"></View>
       </View>
 
-      <View className="items-center justify-center gap-1">
+      <View className="items-center justify-center gap-1 ">
       {profile? (<Image
       source={{ uri: profile.profilePicture }}
-      className="w-20 h-20 rounded-full"
+      className="w-20 h-20 rounded-full bg-slate-200"
     />):
        ( <Image
           source={person?.profile}
-          className="w-20 h-20 rounded-full"
+          className="w-20 h-20 rounded-full bg-slate-200"
         />)}
         <Text  style={{fontFamily:"poppins_semibold"}}className="font-semibold text-lg ">{profile?.fullName}</Text>
         <Text className=" text-normal text-gray-500 mb-3" style={{fontFamily:"poppins_bold"}}>
@@ -79,38 +93,46 @@ console.log("Profile from account:", (profile))
         </TouchableOpacity>
       </View>
 
-      <AccountText 
-      title="Profile Settings"
-      subtitle="Change Your Basic Profile"
-      />
+      {authProfile?.role == "manager" && (
+        <>
+          <AccountText
+            title="Profile Settings"
+            subtitle="Change Your Basic Profile"
+          />
+          <AccountText
+            title="Add Items"
+            subtitle="Add new items to the store"
+          />
+          <AccountText title="Promos Available" subtitle="Add new promos" />
+        </>
+      )}
+      {authProfile?.role == "user" && (
+        <>
+        <AccountText title="Promos" subtitle="Latest Promo from us" />
 
-
-      <AccountText 
-      title="Promos"
-      subtitle="Latest Promo from us"
-      />
+        <AccountText 
+        title="My Address"
+        subtitle="Your Address"
+        />
+   
+        <AccountText 
+        title="Terms, Privacy & Policy"
+        subtitle="Things you may want to know"
+        />
+   
+        <AccountText 
+        title="Help & Support"
+        subtitle="Get Support From Us"
+        />
+       
+        </>
+      )}
  
-      <AccountText 
-      title="My Address"
-      subtitle="Your Address"
-      />
- 
-      <AccountText 
-      title="Terms, Privacy & Policy"
-      subtitle="Things you may want to know"
-      />
- 
-      <AccountText 
-      title="Help & Support"
-      subtitle="Get Support From Us"
-      />
  
       <View className="mx-2 my-4 flex flex-row justify-between">
         <TouchableOpacity onPress={handleLogout}>
-          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Logout</Text>
-          
+          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
         </TouchableOpacity>
-
       </View>
     
       </View>

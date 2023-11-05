@@ -2,9 +2,13 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+
 
 const SucceFullScreen = () => {
     const navigation = useNavigation()
+  const { authStatus, authProfile, authLoaded } = useSelector((state) => state.auth);
+
   return (
     <View className="w-full h-full relative items-center justify-center bg-primary">
 
@@ -24,14 +28,14 @@ const SucceFullScreen = () => {
       </View>
     <MaterialIcons name="verified" size={40} color="white" />
 
-      <Text style={{fontFamily:"poppins_semibold"}} className="text-white my-2 text-lg w-[80%] text-center"> Angelo, Your order has been successfull 
+      <Text style={{fontFamily:"poppins_semibold"}} className="text-white my-2 text-lg w-[80%] text-center"> {authProfile.fullName}, Your order has been successfull 
     <MaterialIcons name="celebration" size={24} color="orange" />
       
       </Text>
     
     <Text style={{fontFamily:"poppins"}} className="text-white my-2 text-l w-[80%] text-center"> Check out your order status in My Order about next steps information </Text>
 
-    <TouchableOpacity onPress={()=>{navigation.navigate("TopBarOrderNavigator")}} className="bg-white p-2 w-[80%] flex-row justify-center rounded absolute bottom-1">
+    <TouchableOpacity onPress={()=>{navigation.navigate("TopBarOrderNavigator")}} className="bg-white p-2 w-[80%] flex-row justify-center rounded absolute bottom-10">
     <Text className="text-primary" style={{fontFamily:"poppins_semibold"}}>Track My Order</Text>
     </TouchableOpacity>
     </View>

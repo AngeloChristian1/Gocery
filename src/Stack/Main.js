@@ -111,7 +111,7 @@ const Main = () => {
           </View>
           <View className="w-full mx-auto flex-row justify-between px-5 h-[70%] self-center gap-4">
             <View className="w-[50%] h-[75%] items-center  justify-between gap-4">
-              <Text className="font-extrabold text-3xl w-full text-white" style={{fontFamily:"poppins_semibold"}}>
+              <Text className="text-3xl  w-full text-white" style={{fontFamily:"poppins_semibold"}}>
                 BANANA 5% OFF
               </Text>
               <TouchableOpacity

@@ -5,7 +5,7 @@ const {width, height} = Dimensions.get("screen")
 export const COLORS = {
     second:"#809CE5",
     primary:"#08C25E",
-
+    secondary:"#FFB930",
 
 }
 

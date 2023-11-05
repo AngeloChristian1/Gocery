@@ -65,7 +65,8 @@ const InProgress = () => {
   };
 
   return (
-    <View className="h-full bg-white">
+    <View className="h-full bg-white relative">
+  
       {orders.map((order) => {
         return (
           <OrderCard

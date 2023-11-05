@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView, ToastAndroid } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ToastAndroid, ActivityIndicator } from "react-native";
 import React from "react";
 import { Feather, MaterialIcons,  FontAwesome5, SimpleLineIcons } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +18,7 @@ const navigation =useNavigation()
   const [profile, setProfile] = useState({});
   const [cartId, setCartId]= useState(item.cartId._id)
   const [totalAmount, setTotalAmount]= useState(item.totalAmount)
+  const [isLoading, setIsloading] = useState(false)
   const getProfile = async () => {
     let userProfile = await getItemAsync("authProfile");
     setProfile(JSON.parse(userProfile));
@@ -49,6 +50,7 @@ const navigation =useNavigation()
         console.log("response from checkout: ", response.data);
         showToast(response.data.message)
         navigation.navigate("SucceFullScreen")
+        setIsloading(false)
       })
       .catch((error) => {
         console.log("error in checkout", error);
@@ -59,6 +61,13 @@ const navigation =useNavigation()
   // console.log("Amount and Id", cartId, "  ", totalAmount);
   return (
     <ScrollView className="w-full h-full bg-white relative">
+    {isLoading ? (
+      <View className=" w-full h-full bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    ) : (
+      <View></View>
+    )}
       <Text className="mx-4" style={{ fontFamily: "poppins" }}>
         Destination
       </Text>
@@ -189,6 +198,7 @@ const navigation =useNavigation()
      
       <TouchableOpacity className="bg-primary rounded p-3 px-2 flex-row items-center justify-center my-2 mt-10 w-[70%] self-center" 
       onPress={async ()=>{
+        setIsloading(true)
         await handleCheckout()
        
       }}

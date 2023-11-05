@@ -3,12 +3,14 @@ import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartReducer";
 import axios from "axios";
+import GoBackButton from "../components/GoBackButton";
+import { useNavigation } from "@react-navigation/native";
 
 
-const SingleItem = ({route, navigation}) => {
+const SingleItem = ({route}) => {
   const item = route.params;
   const [grocery, setGrocery] = useState([]);
-  // console.log("Single item",item)
+  const navigation = useNavigation()
   const dispatch = useDispatch()
   const { authToken } = useSelector((state) => state.auth);
   const cart = useSelector((state)=> state.cart.cart)
@@ -78,7 +80,8 @@ let groc =  {"_id": "653b9132fce2386e57532305", "count": 5, "grocery": {"__v": 0
   }
   // addItemToCart(groc)
   return (
-    <View className="flex-col  h-full bg-white p-2  shadow-xl w-full rounded-md  items-center relative">
+    <View className="flex-col  h-full bg-white p-2 pt-4 shadow-xl w-full rounded-md  items-center relative">
+    <GoBackButton/>
       <View className="flex-row w-full justify-center items-center h-[35%]  p-1 rounded-md  shadow-inner " style={{backgroundColor: `${item.color}`}} >
         <Image
           source={{uri: grocery.picture}}

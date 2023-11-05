@@ -11,37 +11,49 @@ import { useSelector, useDispatch } from "react-redux";
 import { setAuthLoaded, setAuthProfile, setAuthStatus, setAuthToken } from "../redux/authSlice";
 import { getItemAsync } from "expo-secure-store";
 import { useEffect } from "react";
+import * as SplashScreen from "expo-splash-screen";
 
 export const AuthNavigation = () => {
 
   const Stack = createStackNavigator();
     return (
-      <Stack.Navigator>
+      <Stack.Navigator><Stack.Screen name="FirstScreen" component={FirstScreen} options={{
+          headerShown: false,
+        }}/>
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{
+            headerShown: false,
+          }}
         />
-        <Stack.Screen name="Register" component={Register} />
-        <Stack.Screen name="FirstScreen" component={FirstScreen} />
+        <Stack.Screen name="Register" component={Register}  options={{
+          headerShown: false,
+        }}/>
+        
       </Stack.Navigator>
     );
   };
 
 
   export default RootNavigation = () => {
+    // SplashScreen.preventAutoHideAsync();
 const dispatch = useDispatch()
   const { authStatus, authLoaded } = useSelector((state) => state.auth);
 
   const handleAuth = async ()=>{
     let token = await getItemAsync("authToken")
+    let user = await getItemAsync("authProfile");
     // console.log("authtoken__token:", token)
 
     if(token){
       dispatch(setAuthStatus(true));
       dispatch(setAuthToken(token));
+      dispatch(setAuthProfile(JSON.parse(user)));
+
     }
     dispatch(setAuthLoaded(true));
-
+    // SplashScreen.hideAsync();
   }
   useEffect(() => {
     handleAuth();
@@ -50,7 +62,7 @@ const dispatch = useDispatch()
     return null
   }
 
-    return( authStatus ?(<TabNavigator/>): (<AuthNavigation/>) )
+    return( authStatus ?(<StackNavigator/>): (<AuthNavigation/>) )
    
   };
   

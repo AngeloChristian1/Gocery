@@ -47,7 +47,7 @@ const DetailCard = (props) => {
           <Text className="text-center text-gray-500  text-xs font-semibold " style={{fontFamily:"poppins"}}>
             {props.weight}
           </Text>
-          <TouchableOpacity className="flex flex-row align-center gap-2 bg-primary w-0%] rounded justify-center px-3"
+          <TouchableOpacity className="flex flex-row align-center gap-2 bg-primary w-0%] rounded justify-center px-3 mb-3 "
           onPress={props.addCart}
           >
             <Text className="text-xs mr-5 text-white font-semibold" style={{fontFamily:"poppins_semibold"}}>Add To cart</Text>

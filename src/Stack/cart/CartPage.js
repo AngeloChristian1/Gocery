@@ -31,6 +31,7 @@ import { cartTotalPriceSelector } from "../../redux/selectors";
 import { useFocusEffect } from "@react-navigation/native";
 import { useIsFocused } from "@react-navigation/native";
 import { setTotalItems } from "../../redux/totalReducer";
+import GoBackButton from "../../components/GoBackButton";
 
 const CartPage = (props) => {
   const isFocused = useIsFocused();
@@ -88,12 +89,14 @@ const CartPage = (props) => {
         setCountLoading(false);
         cartData.map((item) => {
           dispatch(addItemToCart(item));
+          setError(false)
         });
       })
       .catch((error) => {
         console.log("error in cart page fetch cart",error.response.data.message);
-        showToast(error.response.data.message);
-        setError(error.response.data.message);
+        showToast(error?.response.data.message);
+        setError(true);
+        setCartData(null)
       });
   };
   useFocusEffect(
@@ -108,6 +111,10 @@ const CartPage = (props) => {
   }, [isFocused, count, isLoading]);
 
   const updateCartItemBelow = async (item) => {
+    if(item.count <= 1){
+      showToast("Cant decrement item to 0");
+      setCountLoading(false);
+    }
     if (item.count > 1) {
       axios({
         method: "PATCH",
@@ -182,17 +189,17 @@ const CartPage = (props) => {
       .then((response) => {
         fetchCart();
         console.log("response from cartCard: ", response.data);
-        showToast(response.data.message);
+        showToast( "error: ",  response.data.message);
       })
       .catch((error) => {
-        console.log("error in cart page", error);
+        console.log("error in cart page: __", error);
         alert(error.response.data.message);
-        showToast(error.response.data.message);
+        showToast("error: ",error.response.data.message);
       });
   };
 
   const calculateTotalPrice = (cartData) => {
-    return cartData.reduce(
+    return cartData?.reduce(
       (total, item) => total + item.count * item.grocery.price,
       0
     );
@@ -206,24 +213,35 @@ const CartPage = (props) => {
   useFocusEffect(React.useCallback(() => {}, []));
 
   const cart = useSelector((state) => state.cart.cart);
-  console.log("CART", cart);
+  // console.log("CART", cart);
+
+  // if (!error) {
+  //   console.log("no elements in cart", error)
+  //   return(
+  //     <View className="items-center justify-center bg-green-400 h-full ">
+  //     <Text>No items in cart yet</Text>
+  //     </View>
+  //   )
+  // }
+
 
   return (
-    <SafeAreaView>
+    <SafeAreaView className="h-full w-full bg-white">
+    <GoBackButton/>
       {!isLoading ? (
-        (cartData?.length>1 ) ? (
+        (!cartData ) ? (
           <View className="items-center justify-center h-full gap-6">
-            <Image source={require("../../../assets/images/backet.png")} />
+            <Image source={require("../../../assets/images/NoItems.gif")} className="w-[80%] h-[50%]"/>
             <Text
               className="font-semibold text-normal "
               style={{ fontFamily: "poppins" }}
             >
-              You don't items in cart yet?
+              You don't have items in cart yet?
             </Text>
             <TouchableOpacity
               className="bg-primary p-2 px-6 rounded"
               onPress={() => {
-                navigation.navigate("Main");
+                navigation.goBack();
               }}
             >
               <Text
@@ -237,14 +255,7 @@ const CartPage = (props) => {
         ) : (
           <View>
           <View className="flex-row flex-wrap justify-between  h-full bg-white font-bold relative pt-12 mb-4">
-            <TouchableOpacity
-              onPress={() => {
-                navigation.goBack();
-              }}
-              className="absolute top-5 left-5  p-[1px] rounded-md "
-            >
-              <Feather name="arrow-left" size={24} color="#08C25E" />
-            </TouchableOpacity>
+          
             <TouchableOpacity
               className=" absolute justify-end flex-row items-end bg-white top-3 right-5 hidden"
               onPress={() => {
@@ -381,7 +392,7 @@ const CartPage = (props) => {
             />
             
           </View>
-          <View className=" gap-3 flex-col my-3 items-center justify-center absolute bottom-2 mx-auto w-full shadow-inner justify-self-end align-middle self-center mt-4">
+          <View className=" gap-3 flex-col my-3 items-center justify-center absolute bottom-6 mx-auto w-full shadow-inner justify-self-end align-middle self-center mt-4">
           <View className="flex-row justify-center gap-2 w-[50%] items-center">
             <Text
               className="text-gray-700 "

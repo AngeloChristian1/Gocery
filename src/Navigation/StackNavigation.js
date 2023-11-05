@@ -22,27 +22,30 @@ import { getItemAsync } from "expo-secure-store";
 import { useEffect, useState } from "react";
 import Account from "../BottomTab/Account";
 import NotFound from "../Stack/NotFound";
-// import
 import SingleOrderPage from "../Stack/MyOrder/SingleOrderPage";
-
-
-export const managerScreens =()=>{
-  return(
-    <Stack.Navigator initialRouteName= "statistics">
-    <Stack.Screen
-            name="statistics"
-            component={statistics}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen name="Account" component={Account} />
-     
-    </Stack.Navigator>
-  )
-} 
+import TabNavigator from "./TabNavigation";
+import { ManagerTabVavigator } from "./TabNavigation";
+import { UserTabNavigator } from "./TabNavigation";
+import Visualisation from "../Stack/statistics/Visualisation";
 
 const Stack = createStackNavigator();
+// export const managerScreens =()=>{
+//   return(
+//     <Stack.Navigator initialRouteName= "statistics">
+//     <Stack.Screen
+//             name="statistics"
+//             component={statistics}
+//             options={{
+//               headerShown: false,
+//             }}
+//           />
+//           <Stack.Screen name="Account" component={Account} />
+     
+//     </Stack.Navigator>
+//   )
+// } 
+
+
 function StackNavigator() {
   const { authStatus, authProfile, authLoaded } = useSelector((state) => state.auth);
   const [profile, setProfile] = useState({});
@@ -54,34 +57,39 @@ function StackNavigator() {
     getProfile();
   }, []);
 
-  console.log("Profile from stack:", profile.role);
+
+  console.log(authProfile, "Auth profile in stack");
+  if (!authLoaded) {
+    return null
+  }
 
   return (
-   <Stack.Navigator >
-      {profile.role == "user" && (
+   <Stack.Navigator initialRouteName="Main">
+      {authProfile?.role == "user" && (
         <>
-          <Stack.Screen
-            name="Main"
-            component={Main}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Main" component={TabNavigator} options={{
+            headerShown: false,
+          }}/>
 
-          <Stack.Screen name="Register" component={Register} />
+          <Stack.Screen name="Home" component={TabNavigator} options={{
+            headerShown: false,
+          }}/>
+
           <Stack.Screen name="Links" component={Home} />
-          <Stack.Screen name="Vegetables" component={VegetablesPage} />
+          <Stack.Screen name="Vegetables" component={VegetablesPage} options={{ headerShown: false,}}/>
           <Stack.Screen name="Fruits" component={FruitsPage} />
-          <Stack.Screen name="SingleItem" component={SingleItem} />
-          <Stack.Screen name="Cart" component={CartPage} />
+          <Stack.Screen name="SingleItem" component={SingleItem} options={{ headerShown: false,}}/>
+          <Stack.Screen name="Cart" component={CartPage} options={{
+            headerShown: false,
+          }}/>
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="Recommendation" component={RecomendationPage} />
           <Stack.Screen name="Promos" component={Promos} />
-          <Stack.Screen name="FirstScreen" component={FirstScreen} />
-          <Stack.Screen name="Checkout" component={Checkout} />
+         
+          <Stack.Screen name="Checkout" component={Checkout} options={{
+            headerShown: false,
+          }}/>
           <Stack.Screen name="SingleOrderPage" component={SingleOrderPage} />
-
           <Stack.Screen
             name="TopBarOrderNavigator"
             component={TopBarOrderNavigator}
@@ -99,27 +107,30 @@ function StackNavigator() {
         </>
       )}
 
-      {profile.role == "manager" && (
+      {authProfile?.role == "manager" && (
         <>
           <Stack.Screen
             name="statistics"
-            component={statistics}
+            component={ManagerTabVavigator}
             options={{
               headerShown: false,
             }}
           />
           <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="Visualisation" component={Visualisation} />
         </>
       )}
-      <Stack.Screen
-            name="Home"
-            component={Main}
-            options={{
-              headerShown: false,
-            }}
-          />
+      
     </Stack.Navigator>
   );
 }
 
 export default StackNavigator;
+
+
+   // <Stack.Screen name="Login" component={Login} options={{
+          //   headerShown: false,
+          // }}/>
+          // <Stack.Screen name="Register" component={Register} options={{
+          //   headerShown: false,
+          // }}/>

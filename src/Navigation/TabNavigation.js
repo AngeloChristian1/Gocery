@@ -21,10 +21,11 @@ import Statistics from "../Stack/statistics/Statistics";
 import NotFound from "../Stack/NotFound";
 import StackNavigator from "./StackNavigation";
 import { useFocusEffect } from "@react-navigation/native";
+import Main from "../Stack/Main";
 
 const Tab = createMaterialBottomTabNavigator();
 
-export const managerTabVavigator = () => {
+export const ManagerTabVavigator = () => {
   return (
     <Tab.Navigator
       className="bg-green-200"
@@ -89,10 +90,12 @@ export const managerTabVavigator = () => {
   );
 };
 
+
 function TabNavigator() {
   const { authToken, authProfile,authLoaded } = useSelector((state) => state.auth);
   const [cartData, setCartData] = useState([]);
   const [profile, setProfile] = useState({});
+  const [number, setNumber] = useState(0)
   const getProfile = async () => {
     let userProfile = await getItemAsync("authProfile");
     setProfile(JSON.parse(userProfile));
@@ -114,9 +117,11 @@ function TabNavigator() {
       .then((response) => {
         // console.log("response from cart: ", response.data.data.items);
         setCartData(response.data.data.items);
+        setNumber(cartData.length)
       })
       .catch((error) => {
         console.log("error in cart page", error);
+        setNumber(0)
       });
   };
 
@@ -156,11 +161,10 @@ function TabNavigator() {
         className: "bg-red-300",
       }}
     >
-      {profile.role == "user" && (
-        <>
+      
           <Tab.Screen
             name="Shop"
-            component={StackNavigator}
+            component={Main}
             options={{
               tabBarLabel: "",
               tabBarIcon: ({ focused }) => (
@@ -193,9 +197,9 @@ function TabNavigator() {
 
               tabBarIcon: ({ focused }) => (
                 <View className="text-center  items-center rounded-full relative ">
-                  {cartData.length > 0 && (
+                  {number > 0 && (
                     <Text className="bg-red-500 absolute text-white rounded-full text-[10px]  text-center items-center justify-center z-10 right-0 px-1">
-                      {cartData.length}
+                      {number}
                     </Text>
                   )}
                   <FontAwesome5
@@ -241,41 +245,8 @@ function TabNavigator() {
               ),
             }}
           />
-       
-        </>
-      )}
-
-      {profile.role === "manager" && (
-        <>
-          <Tab.Screen
-            name="Stats"
-            component={Statistics}
-            options={{
-              tabBarLabel: "",
-              tabBarIcon: ({ focused }) => (
-                <View className="text-center  items-center">
-                  <Octicons
-                    name="graph"
-                    size={24}
-                    color={focused ? "#08C25E" : "gray"}
-                  />
-                  <Text
-                    className="my-1 text-xs text-gray-500 w-12 text-center"
-                    style={{
-                      color: focused ? "#08C25E" : "gray",
-                      fontFamily: "poppins",
-                    }}
-                  >
-                    Stats
-                  </Text>
-                </View>
-              ),
-            }}
-          />
          
-        </>
-      )}
-
+     
       <Tab.Screen
       name="Account"
       component={Account}
@@ -306,3 +277,30 @@ function TabNavigator() {
 }
 
 export default TabNavigator;
+
+
+// <Tab.Screen
+//             name="Stats"
+//             component={Statistics}
+//             options={{
+//               tabBarLabel: "",
+//               tabBarIcon: ({ focused }) => (
+//                 <View className="text-center  items-center">
+//                   <Octicons
+//                     name="graph"
+//                     size={24}
+//                     color={focused ? "#08C25E" : "gray"}
+//                   />
+//                   <Text
+//                     className="my-1 text-xs text-gray-500 w-12 text-center"
+//                     style={{
+//                       color: focused ? "#08C25E" : "gray",
+//                       fontFamily: "poppins",
+//                     }}
+//                   >
+//                     Stats
+//                   </Text>
+//                 </View>
+//               ),
+//             }}
+//           />
