@@ -29,22 +29,6 @@ import { UserTabNavigator } from "./TabNavigation";
 import Visualisation from "../Stack/statistics/Visualisation";
 
 const Stack = createStackNavigator();
-// export const managerScreens =()=>{
-//   return(
-//     <Stack.Navigator initialRouteName= "statistics">
-//     <Stack.Screen
-//             name="statistics"
-//             component={statistics}
-//             options={{
-//               headerShown: false,
-//             }}
-//           />
-//           <Stack.Screen name="Account" component={Account} />
-     
-//     </Stack.Navigator>
-//   )
-// } 
-
 
 function StackNavigator() {
   const { authStatus, authProfile, authLoaded } = useSelector((state) => state.auth);
@@ -89,7 +73,9 @@ function StackNavigator() {
           <Stack.Screen name="Checkout" component={Checkout} options={{
             headerShown: false,
           }}/>
-          <Stack.Screen name="SingleOrderPage" component={SingleOrderPage} />
+          <Stack.Screen name="SingleOrderPage" component={SingleOrderPage} options={{
+            headerShown: false,
+          }}/>
           <Stack.Screen
             name="TopBarOrderNavigator"
             component={TopBarOrderNavigator}

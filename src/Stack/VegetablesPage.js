@@ -1,25 +1,33 @@
-import { View, Text, ScrollView, FlatList, ToastAndroid , TouchableOpacity, ActivityIndicator} from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  FlatList,
+  ToastAndroid,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import DetailCard from "../components/DetailCard";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../redux/cartReducer";
-import { MaterialCommunityIcons, Feather } from '@expo/vector-icons'; 
+import { AntDesign } from "@expo/vector-icons";
 import GoBackButton from "../components/GoBackButton";
+import GoHomeButton from "../components/GoHomeButton";
 
 import axios from "axios";
 
-
 const VegetablesPage = ({ route }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [groceries, setGroceries] = useState([]);
-  const cart = useSelector((state)=> state.cart.cart)
-  console.log("cart:", cart)
+  const cart = useSelector((state) => state.cart.cart);
+  console.log("cart:", cart);
   const { authToken } = useSelector((state) => state.auth);
   const category = route.params;
-   const [isLoading, setIsLoading ] = useState(false)
-   const [countLoading, setCountLoading ] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [countLoading, setCountLoading] = useState(false);
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
   }
@@ -31,24 +39,21 @@ const VegetablesPage = ({ route }) => {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
-    }) 
+    })
       .then((response) => {
         setCartData(response.data.data.items);
-        console.log('CART DATA', response.data.data.items)
-        showToast("items in cart");   
-        setCartId(response.data.data)
+        console.log("CART DATA", response.data.data.items);
+        setCartId(response.data.data);
         setIsLoading(false);
-         set
-        cartData.map((item)=>{
-          dispatch(addToCart(item))
-        })
+        cartData.map((item) => {
+          dispatch(addToCart(item));
+        });
       })
       .catch((error) => {
         console.log("error in cart page", error);
-        showToast(error.response.data.message);
       });
   };
- 
+
   const fetchGroceries = async () => {
     axios({
       method: "GET",
@@ -58,16 +63,15 @@ const VegetablesPage = ({ route }) => {
       },
     })
       .then((response) => {
-        // console.log("response from vegetable page: ", response.data.data[0]);
         setGroceries(response.data.data);
         setIsLoading(false);
-        setCountLoading(false)
-        
+        setCountLoading(false);
+        console.log("groceries.length", groceries.length);
       })
       .catch((error) => {
         console.log("error in vegetable page:", error);
         alert(error.response.data.message);
-        setCountLoading(false)
+        setCountLoading(false);
         // setIsLoading(false)
       });
   };
@@ -75,14 +79,8 @@ const VegetablesPage = ({ route }) => {
   useEffect(() => {
     if (authToken) {
       fetchGroceries();
-
     }
   }, [authToken]);
-
-  // const addItemToCart =(item)=>{
-  //   dispatch(addToCart(item))
-  //   alert("item to cart")
-  // }
 
   const handleAddToCart = async (grocery) => {
     axios({
@@ -92,72 +90,90 @@ const VegetablesPage = ({ route }) => {
         Authorization: `Bearer ${authToken}`,
       },
       data: {
-        groceryId:grocery._id,
-        count:1,
+        groceryId: grocery._id,
+        count: 1,
       },
     })
       .then((response) => {
         console.log(response.data);
-        showToast(response.data.message)
-        setIsLoading(true)
-        setCountLoading(false)
-       
+        showToast(response.data.message);
+        setIsLoading(false);
+        setCountLoading(false);
       })
       .catch((error) => {
         console.log("error adding to cart: ", error);
-        showToast( error.response.data.message)
-        setCountLoading(false)
+        showToast(error.response.data.message);
+        setCountLoading(false);
       });
   };
 
-  
+  // if (groceries.length == 0){
+  //   return(
+  //     <View className="items-center justify-center h-full gap-6">
+
+  //     <AntDesign name="exclamationcircleo" size={40} color="red" />
+  //       <Text
+  //       className="font-semibold text-lg "
+  //       style={{ fontFamily: "poppins_semibold" }}
+  //     >
+  //       No items in this category yet
+  //     </Text>
+  //       <Text
+  //       className="font-semibold text-normal "
+  //       style={{ fontFamily: "poppins" }}
+  //     >
+  //       To be Added soon
+  //     </Text>
+  //   </View>
+  //   )
+  // }
 
   return (
-    <ScrollView className="h-full bg-white relative w-full pt-4">
-
-   <GoBackButton/>
-   {countLoading ? (
-    <View className=" w-full h-full bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
-      <ActivityIndicator size="large" color="#0000ff" />
-    </View>
-  ) : (
-    <View></View>
-  )}
-  {!isLoading? ( <View className=" flex flex-row flex-wrap bg-white  mx-1 pt-20">
-  {groceries.map((item, index) => (
-    <DetailCard
-      key={index}
-      onPress={() => {
-        navigation.navigate("SingleItem", item);
-      }}
-      item={item}
-      link="SingleItem"
-      percentage={item.discount ? `${item.discount}` : "10%"}
-      source={item.picture}
-      amount={item.price}
-      discounted={item.discounted ? `${item.discounted}` : "100Rwf"}
-      title={item.name}
-      location="From Rwanda"
-      weight="200gr"
-      addCart={()=>{
-        setCountLoading(true)
-        handleAddToCart(item)
-        fetchCart()
-      }
-      
-      }
-    />
-  ))}
-  </View>):(<ActivityIndicator  className="h-[30%]" color="green" size="large"/>)}
+    <ScrollView className="h-[100vh] bg-white relative w-full pt-4">
+      <GoBackButton />
+      {countLoading ? (
+        <View className=" w-full h-[100vh] bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : (
+        <View></View>
+      )}
+      {!isLoading ? (
+        
+          <View className="flex flex-row flex-wrap bg-white  mx-1 pt-16">
+            {groceries.map((item, index) => (
+              <DetailCard
+                key={index}
+                onPress={() => {
+                  navigation.navigate("SingleItem", item);
+                }}
+                item={item}
+                link="SingleItem"
+                percentage={item.discount ? `${item.discount}` : "10%"}
+                source={item.picture}
+                amount={item.price}
+                discounted={item.discounted ? `${item.discounted}` : "100Rwf"}
+                title={item.name}
+                location="From Rwanda"
+                weight="200gr"
+                addCart={() => {
+                  setCountLoading(true);
+                  handleAddToCart(item);
+                  fetchCart();
+                }}
+              />
+            ))}
+          </View>
+          ):(
+        <View className="h-[100vh] w-full flex items-center justify-center">
+          <ActivityIndicator color="#FFB930" size="large" />
+        </View>
+      )}
     </ScrollView>
   );
 };
 
 export default VegetablesPage;
-
-
-
-
 
 // const [productDetail, setProductDetail] = useState([
 //   {

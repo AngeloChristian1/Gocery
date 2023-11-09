@@ -9,8 +9,6 @@ import {store} from "./src/redux/store"
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from "react";
-// import {persistStore} from "redux-persist";
-// import { PersistGate } from "redux-persist/integration/react";
 
 const slides = [
   {
@@ -48,7 +46,7 @@ const slides = [
 
 const buttonLabel = (label) => {
   return (
-    <View className="p-2 bg-white rounded-2xl px-3 py-2 items-center ">
+    <View className="p-2 bg-white rounded-full px-3 py-2 items-center ">
       <Text className="font-bold text-primary">{label}</Text>
     </View>
   );
@@ -96,9 +94,9 @@ export default function App() {
           <View className=" justify-center items-center h-[100%] p-2 bg-primary">
             <Image
               source={item.image}
-              style={{ width: SIZES.width - 80, height: 400 }}
+              style={{ width: SIZES.width - 80, height: 350 }}
               resizeMode="contain"
-              className="bg-white rounded-full p-2 my-3"
+              className="bg-white rounded-full p-2 my-5"
             />
             <Text className="font-semibold text-lg text-green-900" style={{fontFamily:"poppins_semibold"}}> {item.title}</Text>
             <Text className="text-white text-sm px-5 my-3" style={{fontFamily:"poppins"}}>

@@ -60,7 +60,7 @@ const navigation =useNavigation()
   };
   // console.log("Amount and Id", cartId, "  ", totalAmount);
   return (
-    <ScrollView className="w-full h-full bg-white relative">
+    <ScrollView className="w-full h-full bg-white relative pt-16">
     {isLoading ? (
       <View className=" w-full h-full bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
@@ -68,28 +68,28 @@ const navigation =useNavigation()
     ) : (
       <View></View>
     )}
-      <Text className="mx-4" style={{ fontFamily: "poppins" }}>
+      <Text className="mx-4" style={{ fontFamily: "poppins_semibold" }}>
         Destination
       </Text>
       <View className="m-1 mx-2 bg-gray-100 rounded-lg p-1 flex-row">
-        <View className="w-32 h-32 bg-primary items-center justify-center">
-        <MaterialIcons name="my-location" size={100} color="white" />
+        <View className="w-24 h-24 bg-primary items-center justify-center self-center rounded-full">
+        <MaterialIcons name="my-location" size={50} color="white" />
         </View>
         <View className=" flex-col my-2 mx-2 items-start justify-between">
-          <View style={{ fontFamily: "poppins" }}>
-            <Text style={{ fontFamily: "poppins" }}>
+          <View style={{ fontFamily: "poppins" , fontSize:12}}>
+            <Text style={{ fontFamily: "poppins", fontSize:12 }}>
               Klab Academy Headquarters
             </Text>
-            <Text style={{ fontFamily: "poppins" }}>
+            <Text style={{ fontFamily: "poppins", fontSize:12  }}>
               Address: 44 KG 548 St, Kigali
             </Text>
-            <Text style={{ fontFamily: "poppins" }}>+(250)78888888</Text>
+            <Text style={{ fontFamily: "poppins", fontSize:12  }}>+(250)78888888</Text>
           </View>
           <TouchableOpacity className="bg-primary rounded-full p-1 px-2 flex-row items-center">
           <MaterialIcons name="edit-location" size={16} color="white" /> 
           <Text
               className="text-center text-white"
-              style={{ fontFamily: "poppins" }}
+              style={{ fontFamily: "poppins" , fontSize:12 }}
             >
               Choose Another Location
             </Text>
@@ -98,7 +98,7 @@ const navigation =useNavigation()
       </View>
 
 
-      <Text className="mx-4" style={{ fontFamily: "poppins" }}>
+      <Text className="mx-4" style={{ fontFamily: "poppins" , fontSize:12 }}>
         Pick Up Time
       </Text>
       <View className="m-1 mx-2 bg-gray-100 rounded-lg p-1 flex-row">
@@ -107,7 +107,7 @@ const navigation =useNavigation()
           <View  style={{ fontFamily: "poppins" }} className="flex-row w-[94%]  justify-between align-center my-1">
           <View className="flex-row items-center gap-2 ">
           <Feather name="clock" size={20} color="black" />
-            <Text style={{ fontFamily: "poppins" }} className="mr-24">
+            <Text style={{ fontFamily: "poppins", fontSize:12  }} className="mr-24">
               Fri, Jun 17, 2023 - 12.30
             </Text>
           </View>
@@ -116,7 +116,7 @@ const navigation =useNavigation()
           <View  style={{ fontFamily: "poppins" }} className="flex-row w-[94%]  justify-between align-center my-1 mt-2">
           <View className="flex-row items-center gap-2 ">
           <Feather name="clock" size={20} color="black" />
-            <Text style={{ fontFamily: "poppins" }} className="mr-24">
+            <Text style={{ fontFamily: "poppins", fontSize:12  }} className="mr-24">
               Pick Up Time 30-40 Min
             </Text>
           </View>
@@ -128,7 +128,7 @@ const navigation =useNavigation()
       </View>
 
 
-      <Text className="mx-4" style={{ fontFamily: "poppins" }}>
+      <Text className="mx-4" style={{ fontFamily: "poppins" , fontSize:12 }}>
         Total
       </Text>
       <View className="m-1 mx-2 bg-gray-100 rounded-lg p-1 flex-col ]">
@@ -154,10 +154,10 @@ const navigation =useNavigation()
       </View>
       <View className="  flex-row my-1">
       <View className=" flex-row my-1 mx-2 items-center justify-between w-[110%]">
-            <Text style={{ fontFamily: "poppins_semibold" }} className="mr-24">
+            <Text style={{ fontFamily: "poppins_semibold" , fontSize:12 }} className="mr-24">
               Total
             </Text>
-            <Text style={{ fontFamily: "poppins_semibold" }} className="mr-24">
+            <Text style={{ fontFamily: "poppins_semibold", fontSize:12  }} className="mr-24">
             {totalAmount}.00 Rwf
             </Text>
         </View>
@@ -165,7 +165,7 @@ const navigation =useNavigation()
         
       </View>
 
-      <Text className="mx-4" style={{ fontFamily: "poppins" }}>
+      <Text className="mx-4" style={{ fontFamily: "poppins", fontSize:12  }}>
         Payment Method
       </Text>
       <View>
@@ -173,13 +173,13 @@ const navigation =useNavigation()
         
       <View className="flex-row items-center gap-4 my-1 mt-0">
       <FontAwesome5 name="cc-apple-pay" size={30} color="black" />
-        <Text style={{ fontFamily: "poppins" }} className="mr-24">
+        <Text style={{ fontFamily: "poppins", fontSize:12  }} className="mr-24">
           Apple Pay
         </Text>
       </View>
       <View className="flex-row items-center gap-4 my-1 w-[50%]  rounded justify-cente">
       <FontAwesome5 name="cc-visa" size={30} color="black" />
-        <Text style={{ fontFamily: "poppins" }} className="mr-20">
+        <Text style={{ fontFamily: "poppins" , fontSize:12 }} className="mr-20">
           Visa card
         </Text>
       </View>
@@ -187,8 +187,8 @@ const navigation =useNavigation()
       </View>
       <TouchableOpacity className="bg-primary rounded-lg p-1 px-2 flex-row items-center justify-center ">
           <Text
-              className="text-center text-white"
-              style={{ fontFamily: "poppins" }}
+              className="text-center text-white py-2"
+              style={{ fontFamily: "poppins", fontSize:12  }}
             >
               Add Card
             </Text>
@@ -204,7 +204,7 @@ const navigation =useNavigation()
       }}
       >
       <Text className="text-center text-white"
-      style={{ fontFamily: "poppins" }}>Place Order</Text>
+      style={{ fontFamily: "poppins_semibold" }}>Place Order</Text>
       </TouchableOpacity>
     </ScrollView>
   );

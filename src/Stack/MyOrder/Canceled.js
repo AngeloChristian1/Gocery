@@ -79,6 +79,7 @@ const Canceled = () => {
               statusIconColor="#08C25E"
               transaction={order.transactionId}
               date={order.date}
+              onPress={()=>{navigation.navigate("SingleOrderPage", orders)}}
             />
             
           );

@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity, FlatList } from "react-native";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useNavigation } from "@react-navigation/native";
 import {
   AntDesign,
@@ -10,6 +10,20 @@ import {
 
 const DetailCard = (props) => {
   const navigation = useNavigation();
+  const [like, setLike] = useState({icon:"hearto", color:"orange"})
+
+  const handleSetLike =()=>{
+    if(like.icon == "hearto" ){
+      setLike({
+  icon:"heart",
+  color:"orange"
+})
+    }
+    else {
+      setLike({icon:"hearto", color:"orange"})
+    }
+
+  }
   return (
     <View>
       <TouchableOpacity
@@ -22,6 +36,10 @@ const DetailCard = (props) => {
             {props.percentage}
           </Text>
         </View>
+        <TouchableOpacity onPress={handleSetLike} className="absolute top-1 right-1 bg-white-500 p-[4px] border border-orange-400  rounded-full z-10">
+        <AntDesign name={like.icon} size={15} color={like.color} />
+       
+        </TouchableOpacity>
         <View className="flex-col w-[140%]  p-1 rounded-md bg-re-300 items-center">
           <Image
             source={{ uri: props.source }}

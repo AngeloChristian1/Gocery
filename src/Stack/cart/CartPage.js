@@ -102,7 +102,7 @@ const CartPage = (props) => {
   useFocusEffect(
     React.useCallback(() => {
       // Fetch cart data or perform any other actions when the screen is focused.
-      fetchCart(); // Example: Fetch cart data
+      fetchCart(); 
     }, [])
   );
 
@@ -213,16 +213,6 @@ const CartPage = (props) => {
   useFocusEffect(React.useCallback(() => {}, []));
 
   const cart = useSelector((state) => state.cart.cart);
-  // console.log("CART", cart);
-
-  // if (!error) {
-  //   console.log("no elements in cart", error)
-  //   return(
-  //     <View className="items-center justify-center bg-green-400 h-full ">
-  //     <Text>No items in cart yet</Text>
-  //     </View>
-  //   )
-  // }
 
 
   return (
@@ -231,7 +221,7 @@ const CartPage = (props) => {
       {!isLoading ? (
         (!cartData ) ? (
           <View className="items-center justify-center h-full gap-6">
-            <Image source={require("../../../assets/images/NoItems.gif")} className="w-[80%] h-[50%]"/>
+            <Image source={require("../../../assets/images/NoItems.gif")} className="w-[60%] h-[30%]"/>
             <Text
               className="font-semibold text-normal "
               style={{ fontFamily: "poppins" }}
@@ -278,6 +268,7 @@ const CartPage = (props) => {
             )}
             
             <FlatList
+            scrollEnabled
               className="bg-white w-full  flex-col-reverse"
               data={cartData}
               keyExtractor={(item) => item._id}
@@ -323,7 +314,7 @@ const CartPage = (props) => {
                           className="text-center m-1 text-green-500 font-bold"
                           style={{ fontFamily: "poppins_semibold" }}
                         >
-                          {item.grocery.price * item.count}{" "}
+                          {item.grocery.price * item.count}
                           <Text className="text-xs">Rwf</Text>
                         </Text>
                         <Text
@@ -428,7 +419,7 @@ const CartPage = (props) => {
           </View>
         )
       ) : (
-        <ActivityIndicator className="h-full" color="" size="large" />
+        <ActivityIndicator className="h-full w-full bg-white" color="green" size="large" />
       )}
 
      

@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity, ToastAndroid } from "react-native";
+import { View, Text, Image, TouchableOpacity, ToastAndroid, ActivityIndicator } from "react-native";
 import React, {useState, useEffect} from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartReducer";
@@ -14,8 +14,7 @@ const SingleItem = ({route}) => {
   const dispatch = useDispatch()
   const { authToken } = useSelector((state) => state.auth);
   const cart = useSelector((state)=> state.cart.cart)
-  // console.log("cart from single item:", cart)
-  // console.log("grocery item: ",item)
+  const [isLoading, setIsLoading] = useState(true)
 
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -30,12 +29,13 @@ const SingleItem = ({route}) => {
       },
     })
       .then((response) => {
-        // console.log("response from single item: ", response.data);
         setGrocery(response.data.data);
+        setIsLoading(false)
       })
       .catch((error) => {
         console.log("error in single item", error);
-        alert(error.response.data.message);
+        showToast(error)
+        setIsLoading(false)
       });
   };
 
@@ -50,7 +50,6 @@ const SingleItem = ({route}) => {
 
   
   const handleAddToCart = async () => {
-    // dispatch(addToCart(grocery))
     axios({
       method: "POST",
       url: `https://grocery-9znl.onrender.com/api/v1/cart/add`,
@@ -65,11 +64,13 @@ const SingleItem = ({route}) => {
       .then((response) => {
         console.log(response.data);
         showToast(response.data.message)
+        setIsLoading(false)
        
       })
       .catch((error) => {
         console.log("error adding to cart: ", error);
         showToast( error.response.data.message)
+        setIsLoading(false)
       });
   };
 
@@ -82,6 +83,13 @@ let groc =  {"_id": "653b9132fce2386e57532305", "count": 5, "grocery": {"__v": 0
   return (
     <View className="flex-col  h-full bg-white p-2 pt-4 shadow-xl w-full rounded-md  items-center relative">
     <GoBackButton/>
+    {isLoading ? (
+      <View className=" w-full h-[100vh] bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    ) : (
+      <View></View>
+    )}
       <View className="flex-row w-full justify-center items-center h-[35%]  p-1 rounded-md  shadow-inner " style={{backgroundColor: `${item.color}`}} >
         <Image
           source={{uri: grocery.picture}}
@@ -91,49 +99,50 @@ let groc =  {"_id": "653b9132fce2386e57532305", "count": 5, "grocery": {"__v": 0
       </View>
       <View className=" w-full items-start justify-start gap-1 ">
         <View className="flex-row items-center gap-1">
-          <Text className="text-center text-black  text-lg font-semibold">
+          <Text className="text-center text-black  text-lg font-semibold" style={{fontFamily:"poppins_semibold"}}>
             {grocery.name}
           </Text>
           <View className=" bg-orange-400 p-[2px] px-1 rounded-sm">
-            <Text className="text-xs text-white font-bold">10%</Text>
+            <Text className="text-xs text-white font-bold" style={{fontFamily:"poppins_semibold"}}>10%</Text>
           </View>
         </View>
 
         <View className="flex-row gap-1 items-center ">
-          <Text className="text-center m-1 text-green-500 font-extrabold text-xl">
+          <Text className="text-center m-1 text-green-500 font-extrabold text-xl" style={{fontFamily:"poppins_semibold"}}>
             {grocery.price} Rwf
           </Text>
-          <Text className="text-center m-1 text-gray-400 line-through font-semibold text-sm">
+          <Text className="text-center m-1 text-gray-400 line-through font-semibold text-sm" style={{fontFamily:"poppins_semibold"}}>
             460 Rwf
           </Text>
         </View>
         <View className="line w-full border-b-[1px] border-gray-200 my-2"></View>
 
         <View className="flex-col gap-1 items-start justify-center mb-2">
-          <Text className=" text-gray-400 text-xs font-semibold">
+          <Text className=" text-gray-400 text-xs font-semibold" style={{fontFamily:"poppins_semibold"}}>
             Amount
           </Text>
-          <Text className=" text-gray-500  font-semibold ">
+          <Text className=" text-gray-500  font-semibold" style={{fontFamily:"poppins_semibold"}}>
             {grocery.amount}
           </Text>
         </View>
         <View className="line w-full border-b-[1px] border-gray-200 my-2"></View>
         <View className="flex-col gap-1 items-start justify-center mb-2">
-          <Text className=" text-gray-400 text-xs font-semibold">
+          <Text className=" text-gray-400 text-xs font-semibold" style={{fontFamily:"poppins_semibold"}}>
             Description
           </Text>
-          <Text className=" text-gray-600  font-semibold px-3 my-1" style={{fontFamily:"work_sans"}}>
+          <Text className=" text-gray-600  font-semibold px-3 my-1" style={{fontFamily:"poppins"}}>
             {item.description}
           </Text>
         </View>
       </View>
-      <View className="w-full justify-self-end self-end my-3  rounded absolute bottom-0 left-2 mx-auto">
-      <TouchableOpacity className="bg-primary rounded w-full p-2 items-center justify-self-end" 
+      <View className="w-full justify-self-end self-end my-3  rounded absolute bottom-0 left-2 mx-auto pb-10">
+      <TouchableOpacity className="bg-primary rounded w-full p-2 py-4 items-center justify-self-end" 
       onPress={()=>{
-        // addItemToCart(grocery)
+       setIsLoading(true)
         handleAddToCart()
+        // navigation.navigate("CartPage")
       }}>
-      <Text className="font-bold text-white"> ADD TO CART</Text>
+      <Text className="font-bold text-white" style={{fontFamily:"poppins_semibold"}}> ADD TO CART</Text>
       </TouchableOpacity>
       </View>
     </View>

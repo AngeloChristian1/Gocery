@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {deleteItemAsync,  setItemAsync, getItemAsync} from "expo-secure-store"
 import { setAuthLoaded,setAuthStatus, setAuthProfile, setAuthToken } from "../redux/authSlice";
-
+import * as Updates from 'expo-updates';
 
 
 const Account = () => {
@@ -22,6 +22,21 @@ const Account = () => {
     profile: require("../../assets/images/profile.jpeg"),
     DOB:"02/04/2000"
   })
+
+
+  async function onFetchUpdateAsync() {
+    try {
+      const update = await Updates.checkForUpdateAsync();
+
+      if (update.isAvailable) {
+        await Updates.fetchUpdateAsync();
+        await Updates.reloadAsync();
+      }
+    } catch (error) {
+      // You can also add an alert() to see the error message in case of an error when fetching updates.
+      alert(`Error fetching latest Expo update: ${error}`);
+    }
+  }
 
 const handleLogout = ()=>{
   console.log("Logging Out")
@@ -57,7 +72,16 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
     onPress: () => console.log('Cancel Pressed'),
     style: 'cancel',
   },
-  {text: 'OK', onPress: () =>  handleLogout()},
+  {text: 'OK', onPress: () => {
+    console.log("Logging Out")
+  deleteItemAsync('authToken')
+  deleteItemAsync("authProfile")
+  deleteItemAsync("userCart")
+  dispatch(setAuthToken(false))
+  dispatch(setAuthProfile(null))
+  dispatch(setAuthStatus(false))
+  alert("logout successful")
+  }},
 ]);
 
   return (
@@ -128,7 +152,11 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
         </>
       )}
  
- 
+      <View className="mx-2 my-4 flex flex-row justify-between">
+        <TouchableOpacity  onPress={onFetchUpdateAsync}>
+          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Fetch for updates</Text> 
+        </TouchableOpacity>
+      </View>
       <View className="mx-2 my-4 flex flex-row justify-between">
         <TouchableOpacity onPress={handleLogout}>
           <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 

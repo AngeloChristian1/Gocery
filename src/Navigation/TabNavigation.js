@@ -122,6 +122,7 @@ function TabNavigator() {
       .catch((error) => {
         console.log("error in cart page", error);
         setNumber(0)
+        setCartData(null)
       });
   };
 
@@ -197,9 +198,9 @@ function TabNavigator() {
 
               tabBarIcon: ({ focused }) => (
                 <View className="text-center  items-center rounded-full relative ">
-                  {number > 0 && (
+                  {cartData?.length > 0 && (
                     <Text className="bg-red-500 absolute text-white rounded-full text-[10px]  text-center items-center justify-center z-10 right-0 px-1">
-                      {number}
+                      {cartData?.length}
                     </Text>
                   )}
                   <FontAwesome5

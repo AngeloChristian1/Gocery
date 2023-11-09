@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, KeyboardAvoidingView, ActivityIndicator, ToastAndroid } from "react-native";
 import React from "react";
 import { useState, useEffect } from "react";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -29,6 +29,10 @@ const Login = () => {
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
 
   const handleNameChange = (text) => {
     setName(text);
@@ -92,21 +96,29 @@ const Login = () => {
         setItemAsync("authProfile", JSON.stringify(response.data.user));
         setIsLoading(false);
       })
-      .catch((error) => {
+      .catch((error) => { 
+        console.log("error: ", error.message);
+        if(error.message  == "Request failed with status code 401"){
+          // setPasswordError("Invalid passord");
+          setEmailError("Invalid email or password");
+        }
+        else{
+          setIsLoading(false);
+        showToast("Connection Error")
+        }
         
-        console.log("error: ", error);
       });
   };
 
   const { authStatus, authProfile } = useSelector((state) => state.auth);
-  console.log("authProfile from login: ",authProfile);
+  // console.log("authProfile from login: ",authProfile);
 
 
   return (
     
     <KeyboardAvoidingView className="bg-white">
-      <View className="w-full border-gray-300 border-[.5px] my-3"></View>
-      <View className="bg-white h-full p-3 px-5">
+
+      <View className="bg-white h-full p-3 px-5 mt-20">
         <Text className=" font-bold text-2xl my-6 text-center" style={{fontFamily:"poppins_semibold"}}>Login to continue</Text>
 
         <View>

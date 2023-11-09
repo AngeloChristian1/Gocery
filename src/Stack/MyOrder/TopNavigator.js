@@ -10,25 +10,23 @@ import { useNavigation } from "@react-navigation/native";
 import GoBackButton from "../../components/GoBackButton";
 import GoHomeButton from "../../components/GoHomeButton";
 
-
 const Tab = createMaterialTopTabNavigator();
 
 function MyTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Orders"
-      tabBarOptions={{
+      options={{
         activeTintColor: "#08C25E",
         labelStyle: { fontSize: 12 },
         headerShown: true,
-    headerShadowVisible: true,
-    headerTintColor: '#08C25E',
+        headerShadowVisible: true,
+        headerTintColor: "#08C25E",
         style: {
           backgroundColor: "white",
           marginTop: 50,
           fontFamily: "poppins",
         },
-        
       }}
     >
       <Tab.Screen
@@ -47,10 +45,12 @@ function MyTabs() {
 }
 
 export default function TopBarOrderNavigator() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   return (
-    <View className="relative h-full w-full bg-white pt-5">
-    <GoHomeButton/>
+    <View className="relative h-full w-full bg-white pt-20">
+      <View className="absolute top-2">
+        <GoHomeButton />
+      </View>
 
       <MyTabs />
     </View>

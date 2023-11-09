@@ -2,10 +2,11 @@ import {
   View,
   Text,
   Dimensions,
-  Button,
+  ActivityIndicator,
+  ToastAndroid,
   ScrollView,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import {
@@ -15,20 +16,28 @@ import {
   PieChart,
 } from "react-native-chart-kit";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteItemAsync, setItemAsync, getItemAsync } from "expo-secure-store";
-import {
-  setAuthLoaded,
-  setAuthStatus,
-  setAuthProfile,
-  setAuthToken,
-} from "../../redux/authSlice";
-import { Feather } from '@expo/vector-icons'; 
-// import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import { getItemAsync } from "expo-secure-store";
+import { Feather } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
+import axios from "axios";
 
 export default Statistics = ({ navigation }) => {
+  const isFocused = useIsFocused();
   const [profile, setProfile] = useState(null);
   const { authProfile } = useSelector((state) => state.auth);
+  const { authToken } = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [statsData, setStatsData] = useState([]);
+  const [salesData, setSalesData] = useState([]);
+  const [y, setY] = useState([]);
+  const [x, setX] = useState([]);
+
+  function showToast(message) {
+    ToastAndroid.show(message, ToastAndroid.SHORT);
+  }
 
   const getProfile = async () => {
     let userProfile = await getItemAsync("authProfile");
@@ -38,43 +47,145 @@ export default Statistics = ({ navigation }) => {
     getProfile();
   }, []);
 
-  console.log("Profile from statistics:", profile);
+  // console.log("Profile from statistics:", profile);
+
+  // Fetching statistics
+  const fetchStatistics = async () => {
+    setIsLoading(true);
+    axios({
+      method: "GET",
+      url: `https://grocery-9znl.onrender.com/api/v1/stats/orderstats`,
+      headers: {
+        Authorization: `Bearer ${authToken}`,
+      },
+    })
+      .then((response) => {
+        setStatsData(response?.data.data);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log("error in staistics fetch", error.response.data.message);
+        setError(true);
+        setStatsData(null);
+      });
+  };
+
+  const fetchCategoryStats = async () => {
+    try {
+      const response = await axios.get(
+        `https://grocery-9znl.onrender.com/api/v1/stats/salesbycategory`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      setSalesData(response?.data.data);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error in statistics fetch", error);
+      setError(true);
+      setSalesData(null);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchStatistics();
+      fetchCategoryStats();
+    }, [])
+  );
+  if (isLoading) {
+    return (
+      <View className="flex-row items-center justify-center m-auto h-full">
+        <Text style={{fontFamily:"poppins_semibold", fontSize:24}}>Loading...</Text>
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          className="ml-4"
+        />
+      </View>
+    );
+  } 
+
+  const chartLabel = statsData.map((item) => item._id);
+  const chartData = statsData.map((item) => item.orderCount);
+
+  const labels = salesData.map((item) => item.categoryName);
+  const data = salesData.map((item) => item.soldItems );
+// make data add to 1
+  const sum = data.reduce((acc, currentValue) => acc + currentValue, 0);
+const normalizedData = data.map((value) => value / sum);
+  console.log("CATEGORY SALES STATS", salesData);
+  console.log("statsData", statsData);
+
+  console.log(" labels: ", labels, "data:", data);
+  console.log("chartLabels: ", chartLabel, "chartData", chartData);
 
   return (
     <ScrollView className="h-full w-full py-16 bg-white">
       <View className="w-[90%] flex-row justify-between items-center self-center">
         <View>
           <Text style={{ fontFamily: "poppins" }}>Welcome Back </Text>
-          <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
-            {profile?.fullName}{" "}
-          </Text>
+          {profile?.fullName ? (
+            <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
+              {profile?.fullName}
+            </Text>
+          ) : (
+            <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
+              Grocery Manager
+            </Text>
+          )}
         </View>
         <View>
           <Image
             source={{ uri: profile?.profilePicture }}
-            className="w-16 h-16 rounded-full"
+            className="w-16 h-16 relative rounded-full bg-gray-400"
           />
         </View>
       </View>
+      {isLoading ? (
+        <View className=" w-full h-full bg-gray-500 opacity-70 z-30 bg-opacity-50 backdrop-filter backdrop-blur-lg  top-0  absolute flex-row justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color="#0000ff"
+            className="self-center mb-[100vh]"
+          />
+        </View>
+      ) : (
+        <View></View>
+      )}
       <View className="flex-row flex-wrap w-[90%] self-center justify-around my-3">
         <View className="p-4 px-2 rounded bg-red-400">
-          <Text style={{ fontFamily: "poppins" }}>Items Sold</Text>
+          <Text style={{ fontFamily: "poppins" }}>{statsData[0]?._id}</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
-            321+
+            {statsData[0]?.orderCount}+
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-          <Feather name="arrow-up" size={10} color="white" />
-          <Text className="text-red-800" style={{ fontFamily: "poppins", fontSize:10 }}> <Text className="font-bold">12.0% increase</Text> vs last week</Text>
+            <Feather name="arrow-up" size={10} color="white" />
+            <Text
+              className="text-red-800"
+              style={{ fontFamily: "poppins", fontSize: 10 }}
+            >
+              <Text className="font-bold">12.0% increase</Text> vs last week
+            </Text>
           </View>
         </View>
         <View className="p-4 rounded px-2 bg-blue-400">
-          <Text style={{ fontFamily: "poppins" }}>New Users</Text>
+          <Text style={{ fontFamily: "poppins" }}>{statsData[1]?._id}</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
-            133
+            {statsData[1]?.orderCount}
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-          <Feather name="arrow-down" size={10} color="white" />
-          <Text className="text-blue-800" style={{ fontFamily: "poppins", fontSize:10 }}> <Text className="font-extrabold">2.3% decrease</Text> vs last week</Text>
+            <Feather name="arrow-down" size={10} color="white" />
+            <Text
+              className="text-blue-800"
+              style={{ fontFamily: "poppins", fontSize: 10 }}
+            >
+              <Text className="font-extrabold">2.3% decrease</Text> vs last week
+            </Text>
           </View>
         </View>
       </View>
@@ -85,49 +196,65 @@ export default Statistics = ({ navigation }) => {
             248,000 Rwf
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-          <Feather name="arrow-up" size={10} color="white" />
-          <Text className="text-green-800" style={{ fontFamily: "poppins", fontSize:10 }}> <Text className="font-bold">12.0% increase</Text> vs last week</Text>
+            <Feather name="arrow-up" size={10} color="white" />
+            <Text
+              className="text-green-800"
+              style={{ fontFamily: "poppins", fontSize: 10 }}
+            >
+              <Text className="font-bold">12.0% increase</Text> vs last week
+            </Text>
           </View>
         </View>
         <View className="p-4 rounded px-2 bg-purple-400">
-          <Text style={{ fontFamily: "poppins" }}>Canceled Orders</Text>
+          <Text style={{ fontFamily: "poppins" }}>Total Users</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
-            23
+            93
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-          <Feather name="arrow-down" size={10} color="white" />
-          <Text className="text-purple-800" style={{ fontFamily: "poppins", fontSize:10 }}> <Text className="font-extrabold">4.8% increase</Text> vs last week</Text>
+            <Feather name="arrow-down" size={10} color="white" />
+            <Text
+              className="text-purple-800"
+              style={{ fontFamily: "poppins", fontSize: 10 }}
+            >
+              <Text className="font-extrabold">4.8% increase</Text> vs last week
+            </Text>
           </View>
         </View>
       </View>
-      
+
       <View className="space-y-4 bg-white h-full flex-col py-2 items-center">
-      <Text style={{ fontFamily: "poppins_semibold", fontSize: 16 }}>
-            Sales in this Month
-          </Text>
-        <TouchableOpacity className=" rounded-lg overflow-hidden" onPress={()=>{navigation.navigate("Visualisation")}}>
+        <Text style={{ fontFamily: "poppins_semibold", fontSize: 16 }}>
+          Sales in this Month
+        </Text>
+        <TouchableOpacity
+          className=" rounded-lg overflow-hidden"
+          onPress={() => {
+            // navigation.navigate("Visualisation");
+          }}
+        >
           <LineChart
             data={{
-              labels: ["1st week", "2nd week", "3rd week", "4th week"],
+              labels: chartLabel,
               datasets: [
                 {
-                  data: [4, 10, 16, 32],
+                  data: chartData,
                 },
               ],
             }}
-            width={Dimensions.get("window").width - 20}
-            height={220}
-            yAxisInterval={1}
+            width={Dimensions.get("window").width - 20} // from react-native
+            height={250}
+            // yAxisLabel="$"
+            // yAxisSuffix="k"
+            // yAxisInterval={1} // optional, defaults to 1
             chartConfig={{
               backgroundColor: "#e26a00",
-              backgroundGradientFrom: "#182E83",
-              backgroundGradientTo: "#182E83",
-              decimalPlaces: 0,
+              backgroundGradientFrom: "#fb8c00",
+              backgroundGradientTo: "#ffa726",
+              decimalPlaces: 2, // optional, defaults to 2dp
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-              labelColor: (opacity = 1) => ` rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               style: {
                 borderRadius: 16,
-                marginBottom: 10,
               },
               propsForDots: {
                 r: "6",
@@ -136,34 +263,26 @@ export default Statistics = ({ navigation }) => {
               },
             }}
             bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 6,
+            }}
           />
         </TouchableOpacity>
         <Text style={{ fontFamily: "poppins_semibold", fontSize: 16 }}>
-        Sales by category
-      </Text>
+          Sales by category
+        </Text>
 
         <View className="my-2 rounded-lg overflow-hidden">
-       
-          <View>
-          
-          </View>
+          <View></View>
           <ProgressChart
             data={{
-              labels: [
-                "Vegetables",
-                "Fruits",
-                "Meat",
-                "Seafood",
-                "Milk&Eggs",
-                " Bread",
-                "Frozen",
-                "Organic",
-              ],
-              data: [0.9, 0.4, 0.7, 0.3, 0.5, 0.34, 0.81, 0.4],
+              labels: labels,
+              data: normalizedData,
             }}
             width={Dimensions.get("window").width - 20}
             height={250}
-            strokeWidth={6}
+            strokeWidth={16}
             radius={40}
             chartConfig={{
               backgroundColor: "#e26a00",
@@ -221,41 +340,27 @@ export default Statistics = ({ navigation }) => {
           />
         </View>
 
-        <View className="my-2 rounded-lg overflow-hidden bg-gray-200">
+        <View className="my-2 rounded-lg overflow-hidden bg-gray-200 mb-24 hidden">
           <PieChart
             data={[
               {
-                name: "Seoul",
-                population: 21500000,
-                color: "rgba(131, 167, 234, 1)",
+                name: "Fruits",
+                population: 63,
+                color: "#e26a00",
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15,
               },
               {
-                name: "Toronto",
-                population: 2800000,
-                color: "#F00",
+                name: "Vegetables",
+                population: 263,
+                color: "#182E83",
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15,
               },
               {
-                name: "Beijing",
-                population: 527612,
+                name: "Bakery",
+                population: 28,
                 color: "red",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },
-              {
-                name: "New York",
-                population: 8538000,
-                color: "#ffffff",
-                legendFontColor: "#7F7F7F",
-                legendFontSize: 15,
-              },
-              {
-                name: "Moscow",
-                population: 11920000,
-                color: "rgb(0, 0, 255)",
                 legendFontColor: "#7F7F7F",
                 legendFontSize: 15,
               },
@@ -266,7 +371,7 @@ export default Statistics = ({ navigation }) => {
               backgroundColor: "#e26a00",
               backgroundGradientFrom: "#fb8c00",
               backgroundGradientTo: "#ffa726",
-              decimalPlaces: 0,
+              decimalPlaces: 1.0,
               color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
               labelColor: (opacity = 1) => ` rgba(255, 255, 255, ${opacity})`,
               style: {
