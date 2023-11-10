@@ -67,10 +67,10 @@ const InProgress = () => {
   return (
     <View className="h-full bg-white relative">
   
-      {orders.map((order) => {
+      {orders.map((order, index) => {
         return (
           <OrderCard
-          key={order.Id}
+          key={index}
             orderId={order._id}
             deliver={order.deliveryAddress}
             locationIcon="location-arrow"

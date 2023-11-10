@@ -67,10 +67,10 @@ const Canceled = () => {
   return (
     <ScrollView className="h-full bg-white w-full flex-col">
       <View classname="w-[90%] mx-auto bg-red-300 h-full">
-        {orders.map((order) => {
+        {orders.map((order, index) => {
           return (
             <OrderCard
-              orderId={order._id}
+            key={index}
               deliver={order.deliveryAddress}
               locationIcon="location-arrow"
               statusIcon={oneOrder.statusIcon}

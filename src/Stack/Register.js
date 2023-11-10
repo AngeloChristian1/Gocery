@@ -47,7 +47,10 @@ const Register = () => {
   const navigation = useNavigation();
 
   function showToast(message) {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
+    ToastAndroid.show(message, ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+      25,
+      50,);
   }
 
   const handleNameChange = (text) => {
@@ -144,6 +147,7 @@ const Register = () => {
         console.log("error: ", error.message);
         if(error.message  == "Request failed with status code 401"){
           setEmailError("Invalid email or password");
+          setIsLoading(false);
         }
         else{
           setIsLoading(false);

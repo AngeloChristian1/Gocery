@@ -32,7 +32,7 @@ const EditProfile = ({ route }) => {
   const [phone, setPhone] = useState(item?.phone);
   const [DOB, setDOB] = useState(item?.DOB);
   const [profile, setProfile] = useState({});
-  let uriLink = null;
+
 
 
   function showToast(message) {
@@ -49,54 +49,34 @@ const EditProfile = ({ route }) => {
 
   const formData = new FormData();
 
-  const pickImage = async () => {
+  const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      aspect: [4, 3],
       quality: 1,
     });
 
     if (!result.canceled) {
       setImage(result);
-      setImageUri(result.assets[0].uri)
-
-      // uriLink = image.assets[0].uri;
-      // console.log("uriLink:", uriLink);
-
-      // formData.append("profilePicture", {
-      //   uri: image.assets[0].uri,
-      //   type: "image/jpg",
-      //   name: new Date() + "picture",
-      // });
-      // setContent({
-      //   uri: image.assets[0],
-      //   type: "image/jpg/png",
-      //   name: new Date() + "picture",
-      // })
-    }
-
-    if (hasGalleryPermissions === false) {
-      return <Text> No Access to internal storage</Text>;
+      setImageUri(image.assets[0].uri)
+      console.log("image : ",image)
+    } else {
+      alert('You did not select any image.');
     }
   };
-  console.log("imag URI : ", imageUri)
+  console.log("image URI: ", imageUri)
 
   const handleUpdateProfile = async () => {
-    // console.log("Image assets: ", image?.uri);
-    formData.append("picture",{
-      uri: image?.assets[0].uri,
-      type: "image/jpg/png",
+    formData.append("profilePicture", {
       name: new Date() + "_picture",
-    })
-    // formData.append("profilePicture",image.assets[0].uri)
+      uri: imageUri,
+      type: "image/jpeg",
+    });
+
     formData.append("fullName", name);
     formData.append("email", email);
     formData.append("phone", phone);
     formData.append("DateOfBirth", DOB);
-    console.log("content on press: ", content)
-    // console.log("FormData:", formData._parts[0]);
-    // console.log("uriLink", image.assets[0].uri);
+    console.log("content on press: ", formData._parts[0][1])
 
     await axios({
       method: "PATCH",
@@ -106,7 +86,7 @@ const EditProfile = ({ route }) => {
         Accept: "application/json",
         Authorization: `Bearer ${authToken}`,
       },
-      data: formData,
+       formData,
       
     })
       .then((response) => {
@@ -153,7 +133,7 @@ const EditProfile = ({ route }) => {
         <TouchableOpacity
           className="bg-primary p-2 text-primary rounded-full absolute bottom-0 right-[35%]"
           onPress={() => {
-            pickImage();
+            pickImageAsync();
           }}
         >
           <Feather name="edit-2" size={18} color="white" />

@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {deleteItemAsync,  setItemAsync, getItemAsync} from "expo-secure-store"
 import { setAuthLoaded,setAuthStatus, setAuthProfile, setAuthToken } from "../redux/authSlice";
-import * as Updates from 'expo-updates';
+
 
 
 const Account = () => {
@@ -22,21 +22,6 @@ const Account = () => {
     profile: require("../../assets/images/profile.jpeg"),
     DOB:"02/04/2000"
   })
-
-
-  async function onFetchUpdateAsync() {
-    try {
-      const update = await Updates.checkForUpdateAsync();
-
-      if (update.isAvailable) {
-        await Updates.fetchUpdateAsync();
-        await Updates.reloadAsync();
-      }
-    } catch (error) {
-      // You can also add an alert() to see the error message in case of an error when fetching updates.
-      alert(`Error fetching latest Expo update: ${error}`);
-    }
-  }
 
 const handleLogout = ()=>{
   console.log("Logging Out")
@@ -72,20 +57,11 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
     onPress: () => console.log('Cancel Pressed'),
     style: 'cancel',
   },
-  {text: 'OK', onPress: () => {
-    console.log("Logging Out")
-  deleteItemAsync('authToken')
-  deleteItemAsync("authProfile")
-  deleteItemAsync("userCart")
-  dispatch(setAuthToken(false))
-  dispatch(setAuthProfile(null))
-  dispatch(setAuthStatus(false))
-  alert("logout successful")
-  }},
+  {text: 'OK', onPress: () =>  handleLogout()},
 ]);
 
   return (
-    <ScrollView className="pt-10 px-2 h-full bg-white">
+    <ScrollView className="pt-10 px-2 h-full bg-white mb-10">
     <View className="pt-10 px-2 h-full bg-white">
  
       <View className="justify-center align-center flex-col flex m-2  border-gray-500 border-b-0">
@@ -122,10 +98,12 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
           <AccountText
             title="Profile Settings"
             subtitle="Change Your Basic Profile"
+            
           />
           <AccountText
-            title="Add Items"
+            title="Add Items"     
             subtitle="Add new items to the store"
+            onPress={()=>{navigation.navigate("AddDataPage")}}
           />
           <AccountText title="Promos Available" subtitle="Add new promos" />
         </>
@@ -144,24 +122,25 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
         subtitle="Things you may want to know"
         />
    
+        <View className="mx-2 my-4 flex flex-row justify-between">
+        <TouchableOpacity onPress={handleLogout}>
+          <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
+        </TouchableOpacity>
+      </View>
+
         <AccountText 
         title="Help & Support"
         subtitle="Get Support From Us"
         />
+    
        
         </>
       )}
- 
       <View className="mx-2 my-4 flex flex-row justify-between">
-        <TouchableOpacity  onPress={onFetchUpdateAsync}>
-          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Fetch for updates</Text> 
-        </TouchableOpacity>
-      </View>
-      <View className="mx-2 my-4 flex flex-row justify-between">
-        <TouchableOpacity onPress={handleLogout}>
-          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
-        </TouchableOpacity>
-      </View>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
+      </TouchableOpacity>
+    </View>
     
       </View>
       </ScrollView>

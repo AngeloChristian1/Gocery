@@ -27,6 +27,7 @@ import TabNavigator from "./TabNavigation";
 import { ManagerTabVavigator } from "./TabNavigation";
 import { UserTabNavigator } from "./TabNavigation";
 import Visualisation from "../Stack/statistics/Visualisation";
+import AddDataPage from "../Stack/statistics/AddDataPage";
 
 const Stack = createStackNavigator();
 
@@ -102,8 +103,16 @@ function StackNavigator() {
               headerShown: false,
             }}
           />
+          <Stack.Screen
+            name="AddDataPage"
+            component={AddDataPage}
+            options={{
+              headerShown: false,
+            }}
+          />
           <Stack.Screen name="Account" component={Account} />
           <Stack.Screen name="Visualisation" component={Visualisation} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
         </>
       )}
       

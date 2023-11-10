@@ -158,65 +158,65 @@ const normalizedData = data.map((value) => value / sum);
         <View></View>
       )}
       <View className="flex-row flex-wrap w-[90%] self-center justify-around my-3">
-        <View className="p-4 px-2 rounded bg-red-400">
+        <View className="p-4 px-2 rounded bg-red-400 w-[48%]">
           <Text style={{ fontFamily: "poppins" }}>{statsData[0]?._id}</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
             {statsData[0]?.orderCount}+
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-            <Feather name="arrow-up" size={10} color="white" />
+            <Feather name="arrow-up" size={8} color="white" />
             <Text
               className="text-red-800"
-              style={{ fontFamily: "poppins", fontSize: 10 }}
+              style={{ fontFamily: "poppins", fontSize: 8 }}
             >
-              <Text className="font-bold">12.0% increase</Text> vs last week
+              <Text className="font-bold ">12% increase</Text> this week
             </Text>
           </View>
         </View>
-        <View className="p-4 rounded px-2 bg-blue-400">
+        <View className="p-4 rounded px-2 bg-blue-400 w-[48%]">
           <Text style={{ fontFamily: "poppins" }}>{statsData[1]?._id}</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
             {statsData[1]?.orderCount}
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-            <Feather name="arrow-down" size={10} color="white" />
+            <Feather name="arrow-down" size={8} color="white" />
             <Text
               className="text-blue-800"
-              style={{ fontFamily: "poppins", fontSize: 10 }}
+              style={{ fontFamily: "poppins", fontSize: 8 }}
             >
-              <Text className="font-extrabold">2.3% decrease</Text> vs last week
+              <Text className="font-extrabold">2.3% decrease</Text> this week
             </Text>
           </View>
         </View>
       </View>
       <View className="flex-row flex-wrap w-[90%] self-center justify-around my-3">
-        <View className="p-4 px-2 rounded bg-green-400">
+        <View className="p-4 px-2 rounded bg-green-400 w-[48%]">
           <Text style={{ fontFamily: "poppins" }}>Total Revenue</Text>
-          <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
-            248,000 Rwf
+          <Text style={{ fontFamily: "poppins_semibold", fontSize: 17 }}>
+            248,000 <Text style={{ fontFamily: "poppins_semibold", fontSize: 10 }}>Rwf</Text> 
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-            <Feather name="arrow-up" size={10} color="white" />
+            <Feather name="arrow-up" size={8} color="white" />
             <Text
               className="text-green-800"
-              style={{ fontFamily: "poppins", fontSize: 10 }}
+              style={{ fontFamily: "poppins", fontSize: 8 }}
             >
-              <Text className="font-bold">12.0% increase</Text> vs last week
+              <Text className="font-bold">12.0% increase</Text> this week
             </Text>
           </View>
         </View>
-        <View className="p-4 rounded px-2 bg-purple-400">
+        <View className="p-4 rounded px-2 bg-purple-400 w-[48%]">
           <Text style={{ fontFamily: "poppins" }}>Total Users</Text>
           <Text style={{ fontFamily: "poppins_semibold", fontSize: 20 }}>
             93
           </Text>
           <View className="flex-row gap-1 items-center justify-start">
-            <Feather name="arrow-down" size={10} color="white" />
+            <Feather name="arrow-down" size={8} color="white" />
             <Text
               className="text-purple-800"
-              style={{ fontFamily: "poppins", fontSize: 10 }}
+              style={{ fontFamily: "poppins", fontSize: 8 }}
             >
-              <Text className="font-extrabold">4.8% increase</Text> vs last week
+              <Text className="font-extrabold">4.8% increase</Text> this week
             </Text>
           </View>
         </View>
@@ -224,7 +224,7 @@ const normalizedData = data.map((value) => value / sum);
 
       <View className="space-y-4 bg-white h-full flex-col py-2 items-center">
         <Text style={{ fontFamily: "poppins_semibold", fontSize: 16 }}>
-          Sales in this Month
+          Sales by orders
         </Text>
         <TouchableOpacity
           className=" rounded-lg overflow-hidden"
@@ -305,7 +305,10 @@ const normalizedData = data.map((value) => value / sum);
           />
         </View>
 
-        <View className="my-2 rounded-lg overflow-hidden">
+        <View className="my-2 rounded-lg overflow-hidden flex-col py-2 items-center">
+        <Text style={{ fontFamily: "poppins_semibold", fontSize: 16 }}>
+          Sales by orders
+        </Text>
           <BarChart
             data={{
               labels: ["January", "February", "March", "April", "May", "June"],

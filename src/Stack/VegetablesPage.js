@@ -12,9 +12,8 @@ import DetailCard from "../components/DetailCard";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import { addToCart, removeFromCart } from "../redux/cartReducer";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Feather, AntDesign } from "@expo/vector-icons";
 import GoBackButton from "../components/GoBackButton";
-import GoHomeButton from "../components/GoHomeButton";
 
 import axios from "axios";
 
@@ -26,7 +25,7 @@ const VegetablesPage = ({ route }) => {
   console.log("cart:", cart);
   const { authToken } = useSelector((state) => state.auth);
   const category = route.params;
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [countLoading, setCountLoading] = useState(false);
   function showToast(message) {
     ToastAndroid.show(message, ToastAndroid.SHORT);
@@ -43,14 +42,17 @@ const VegetablesPage = ({ route }) => {
       .then((response) => {
         setCartData(response.data.data.items);
         console.log("CART DATA", response.data.data.items);
+        showToast("items in cart");
         setCartId(response.data.data);
         setIsLoading(false);
+        set;
         cartData.map((item) => {
           dispatch(addToCart(item));
         });
       })
       .catch((error) => {
         console.log("error in cart page", error);
+        showToast(error.response.data.message);
       });
   };
 
@@ -63,10 +65,10 @@ const VegetablesPage = ({ route }) => {
       },
     })
       .then((response) => {
+        // console.log("response from vegetable page: ", response.data.data[0]);
         setGroceries(response.data.data);
         setIsLoading(false);
         setCountLoading(false);
-        console.log("groceries.length", groceries.length);
       })
       .catch((error) => {
         console.log("error in vegetable page:", error);
@@ -81,6 +83,11 @@ const VegetablesPage = ({ route }) => {
       fetchGroceries();
     }
   }, [authToken]);
+
+  // const addItemToCart =(item)=>{
+  //   dispatch(addToCart(item))
+  //   alert("item to cart")
+  // }
 
   const handleAddToCart = async (grocery) => {
     axios({
@@ -97,7 +104,7 @@ const VegetablesPage = ({ route }) => {
       .then((response) => {
         console.log(response.data);
         showToast(response.data.message);
-        setIsLoading(false);
+        setIsLoading(true);
         setCountLoading(false);
       })
       .catch((error) => {
@@ -107,66 +114,50 @@ const VegetablesPage = ({ route }) => {
       });
   };
 
-  // if (groceries.length == 0){
-  //   return(
-  //     <View className="items-center justify-center h-full gap-6">
-
-  //     <AntDesign name="exclamationcircleo" size={40} color="red" />
-  //       <Text
-  //       className="font-semibold text-lg "
-  //       style={{ fontFamily: "poppins_semibold" }}
-  //     >
-  //       No items in this category yet
-  //     </Text>
-  //       <Text
-  //       className="font-semibold text-normal "
-  //       style={{ fontFamily: "poppins" }}
-  //     >
-  //       To be Added soon
-  //     </Text>
-  //   </View>
-  //   )
-  // }
-
   return (
-    <ScrollView className="h-[100vh] bg-white relative w-full pt-4">
+    <ScrollView className="h-full bg-white relative w-full pt-4">
       <GoBackButton />
       {countLoading ? (
-        <View className=" w-full h-[100vh] bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
+        <View className=" w-full h-full bg-green-200 opacity-30   z-30 bg-opacity-30 backdrop-filter backdrop-blur-lg  top-0  absolute justify-center items-center">
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       ) : (
         <View></View>
       )}
       {!isLoading ? (
-        
-          <View className="flex flex-row flex-wrap bg-white  mx-1 pt-16">
-            {groceries.map((item, index) => (
-              <DetailCard
-                key={index}
-                onPress={() => {
-                  navigation.navigate("SingleItem", item);
-                }}
-                item={item}
-                link="SingleItem"
-                percentage={item.discount ? `${item.discount}` : "10%"}
-                source={item.picture}
-                amount={item.price}
-                discounted={item.discounted ? `${item.discounted}` : "100Rwf"}
-                title={item.name}
-                location="From Rwanda"
-                weight="200gr"
-                addCart={() => {
-                  setCountLoading(true);
-                  handleAddToCart(item);
-                  fetchCart();
-                }}
-              />
-            ))}
-          </View>
-          ):(
-        <View className="h-[100vh] w-full flex items-center justify-center">
-          <ActivityIndicator color="#FFB930" size="large" />
+        <View className=" flex flex-row flex-wrap bg-white  mx-1 pt-20">
+          {groceries.length == 0 && (
+            <View className="items-center  h-[70vh] w-full flex-col justify-center gap-3">
+            <AntDesign name="exclamationcircleo" size={30} color="red" />
+              <Text className="" style={{fontFamily:"poppins_semibold", fontSize:20}}>No items in cart yet</Text>
+            </View>
+          )}
+          {groceries.map((item, index) => (
+            <DetailCard
+              key={index}
+              onPress={() => {
+                navigation.navigate("SingleItem", item);
+              }}
+              item={item}
+              link="SingleItem"
+              percentage={item.discount ? `${item.discount}` : "10%"}
+              source={item.picture}
+              amount={item.price}
+              discounted={item.discounted ? `${item.discounted}` : "100Rwf"}
+              title={item.name}
+              location="From Rwanda"
+              weight="200gr"
+              addCart={() => {
+                setCountLoading(true);
+                handleAddToCart(item);
+                fetchCart();
+              }}
+            />
+          ))}
+        </View>
+      ) : (
+        <View className="h-[100vh] w-full items-center justify-center flex-row ">
+          <ActivityIndicator color="#FFB930" className="m-auto" size="large" />
         </View>
       )}
     </ScrollView>

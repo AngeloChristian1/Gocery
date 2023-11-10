@@ -99,8 +99,9 @@ const Login = () => {
       .catch((error) => { 
         console.log("error: ", error.message);
         if(error.message  == "Request failed with status code 401"){
-          // setPasswordError("Invalid passord");
+          
           setEmailError("Invalid email or password");
+          setIsLoading(false)
         }
         else{
           setIsLoading(false);

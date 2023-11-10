@@ -8,9 +8,9 @@ const navigation = useNavigation()
   return (
     <View>
       <View className="mx-2 mt-4 flex flex-row justify-between align-center" style={{fontFamily:"poppins"}}>
-        <TouchableOpacity  onPress={()=>{navigation.navigate("Promos")}}>
-          <Text className="font-semibold text-lg " style={{fontFamily:"poppins_semibold"}}>{props.title}</Text>
-          <Text className=" text-normal text-gray-500 mb-3" style={{fontFamily:"poppins"}}>
+        <TouchableOpacity  onPress={props.onPress}>
+          <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>{props.title}</Text>
+          <Text className=" text-sm text-gray-500 mb-4" style={{fontFamily:"poppins"}}>
             {props.subtitle}
           </Text>
         </TouchableOpacity >
