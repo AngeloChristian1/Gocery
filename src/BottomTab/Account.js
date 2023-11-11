@@ -61,7 +61,7 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
 ]);
 
   return (
-    <ScrollView className="pt-10 px-2 h-full bg-white mb-10">
+    <ScrollView className="pt-10 px-2 h-full bg-white pb-10">
     <View className="pt-10 px-2 h-full bg-white">
  
       <View className="justify-center align-center flex-col flex m-2  border-gray-500 border-b-0">

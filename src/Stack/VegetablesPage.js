@@ -53,6 +53,9 @@ const VegetablesPage = ({ route }) => {
       .catch((error) => {
         console.log("error in cart page", error);
         showToast(error.response.data.message);
+        setCountLoading(false);
+        setIsLoading(false);
+
       });
   };
 
@@ -74,7 +77,7 @@ const VegetablesPage = ({ route }) => {
         console.log("error in vegetable page:", error);
         alert(error.response.data.message);
         setCountLoading(false);
-        // setIsLoading(false)
+        setIsLoading(false)
       });
   };
 
@@ -111,6 +114,7 @@ const VegetablesPage = ({ route }) => {
         console.log("error adding to cart: ", error);
         showToast(error.response.data.message);
         setCountLoading(false);
+        setIsLoading(false);
       });
   };
 

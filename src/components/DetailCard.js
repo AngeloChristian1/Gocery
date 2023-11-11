@@ -28,7 +28,7 @@ const DetailCard = (props) => {
     <View>
       <TouchableOpacity
         onPress={props.onPress}
-        className="flex-col  m-3 mx-2 border-[1px] border-gray-200 ring-2  p-2  px-3 pb-0 shadow-xl  rounded-md justify-center items-center relative"
+        className="flex-col  m-3 mx-2 border-[1px] border-gray-200 ring-2  p-1 pb-0 shadow-xl  rounded-md justify-center items-center relative"
         style={{ elevation: 5 }}
       >
         <View className="absolute top-1 left-1 bg-orange-500 p-[2px] px-1 rounded-sm z-10">
@@ -36,7 +36,7 @@ const DetailCard = (props) => {
             {props.percentage}
           </Text>
         </View>
-        <TouchableOpacity onPress={handleSetLike} className="absolute top-1 right-1 bg-white-500 p-[4px] border border-orange-400  rounded-full z-10">
+        <TouchableOpacity onPress={handleSetLike} className="absolute top-1 right-1 bg-orange-100 p-[4px] border border-orange-400  rounded-full z-10">
         <AntDesign name={like.icon} size={15} color={like.color} />
        
         </TouchableOpacity>
