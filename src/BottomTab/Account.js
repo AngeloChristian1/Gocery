@@ -106,6 +106,12 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
             onPress={()=>{navigation.navigate("AddDataPage")}}
           />
           <AccountText title="Promos Available" subtitle="Add new promos" />
+
+          <View className="mx-2 my-4 flex flex-row justify-between">
+          <TouchableOpacity onPress={handleLogout}>
+            <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
+          </TouchableOpacity>
+        </View>
         </>
       )}
       {authProfile?.role == "user" && (
@@ -122,17 +128,16 @@ Alert.alert('Log Out', 'Are You  sure You want to Log out', [
         subtitle="Things you may want to know"
         />
    
-        <View className="mx-2 my-4 flex flex-row justify-between">
-        <TouchableOpacity onPress={handleLogout}>
-          <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
-        </TouchableOpacity>
-      </View>
-
         <AccountText 
         title="Help & Support"
         subtitle="Get Support From Us"
         />
     
+        <View className="mx-2 my-4 flex flex-row justify-between">
+        <TouchableOpacity onPress={handleLogout}>
+          <Text className="font-semibold  " style={{fontFamily:"poppins_semibold"}}>Logout</Text> 
+        </TouchableOpacity>
+      </View>
        
         </>
       )}

@@ -26,7 +26,7 @@ const SingleOrderPage = ({props, route}) => {
   const checkOrder = async () => {
     axios({
       method: "POST",
-      url: `https://grocery-9znl.onrender.com/api/v1/cart/confirmdelivery/${ order._id}`,
+      url: `https://grocery-9znl.onrender.com/api/v1/cart/confirmdelivery/${order._id}`,
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -34,6 +34,7 @@ const SingleOrderPage = ({props, route}) => {
       .then((response) => {
         showToast(response.data.message)
         setIsLoading(false)
+        navigation.navigate("History")
       })
       .catch((error) => {
         console.log("error in cart page", error);
